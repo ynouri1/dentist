@@ -1,10 +1,11 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Ortho.UI.ViewModels"
+        xmlns:loc="using:Ortho.UI.Localization"
         x:Class="Ortho.UI.Views.LoginWindow"
         x:DataType="vm:LoginViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="Ortho — Connexion"
+        Title="{x:Static loc:L.LoginWindowTitle}"
         Width="420" SizeToContent="Height"
         WindowStartupLocation="CenterScreen"
         CanResize="False">
@@ -16,24 +17,24 @@
                    Foreground="Red" TextWrapping="Wrap"
                    IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}" />
 
-        <TextBlock Text="Identifiant" />
+        <TextBlock Text="{x:Static loc:L.LabelUsername}" />
         <TextBox Text="{Binding Username}" IsEnabled="{Binding !IsUnlock}" />
 
         <StackPanel Spacing="10" IsVisible="{Binding IsFirstRun}">
-            <TextBlock Text="Nom affiché" />
-            <TextBox Text="{Binding DisplayName}" PlaceholderText="Dr ..." />
-            <TextBlock Text="Rôle" />
+            <TextBlock Text="{x:Static loc:L.LabelDisplayName}" />
+            <TextBox Text="{Binding DisplayName}" PlaceholderText="{x:Static loc:L.DisplayNamePlaceholder}" />
+            <TextBlock Text="{x:Static loc:L.LabelRole}" />
             <ComboBox SelectedIndex="{Binding RoleIndex}" HorizontalAlignment="Stretch">
-                <ComboBoxItem>Praticien</ComboBoxItem>
-                <ComboBoxItem>Assistante</ComboBoxItem>
+                <ComboBoxItem Content="{x:Static loc:L.RolePraticien}" />
+                <ComboBoxItem Content="{x:Static loc:L.RoleAssistante}" />
             </ComboBox>
         </StackPanel>
 
-        <TextBlock Text="Mot de passe" />
+        <TextBlock Text="{x:Static loc:L.LabelPassword}" />
         <TextBox Text="{Binding Password}" PasswordChar="•" />
 
         <StackPanel Spacing="10" IsVisible="{Binding IsFirstRun}">
-            <TextBlock Text="Confirmation du mot de passe" />
+            <TextBlock Text="{x:Static loc:L.LabelPasswordConfirmation}" />
             <TextBox Text="{Binding PasswordConfirmation}" PasswordChar="•" />
         </StackPanel>
 

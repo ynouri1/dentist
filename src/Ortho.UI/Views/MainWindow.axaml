@@ -1,10 +1,11 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Ortho.UI.ViewModels"
+        xmlns:loc="using:Ortho.UI.Localization"
         x:Class="Ortho.UI.Views.MainWindow"
         x:DataType="vm:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="Ortho — Gestion des patients"
+        Title="{x:Static loc:L.AppTitle}"
         Width="1200" Height="750">
 
     <Grid RowDefinitions="Auto,*,Auto">
@@ -12,13 +13,13 @@
         <!-- Barre d'outils -->
         <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="12">
             <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
-                <TextBox Text="{Binding SearchText}" PlaceholderText="Rechercher (nom, dossier, téléphone)…" Width="320" />
-                <Button Content="Nouveau patient" Command="{Binding NewPatientCommand}" />
-                <Button Content="Sauvegarder les données" Command="{Binding BackupCommand}" />
+                <TextBox Text="{Binding SearchText}" PlaceholderText="{x:Static loc:L.SearchPlaceholder}" Width="320" />
+                <Button Content="{x:Static loc:L.NewPatient}" Command="{Binding NewPatientCommand}" />
+                <Button Content="{x:Static loc:L.BackupData}" Command="{Binding BackupCommand}" />
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                 <TextBlock Text="{Binding CurrentUserDisplay}" VerticalAlignment="Center" Opacity="0.7" />
-                <Button Content="Verrouiller" Command="{Binding LockCommand}" />
+                <Button Content="{x:Static loc:L.Lock}" Command="{Binding LockCommand}" />
             </StackPanel>
         </Grid>
 
@@ -42,7 +43,7 @@
             <TabControl Grid.Column="1" Margin="16,0,0,0"
                         IsVisible="{Binding Form, Converter={x:Static ObjectConverters.IsNotNull}}">
 
-                <TabItem Header="Fiche">
+                <TabItem Header="{x:Static loc:L.TabRecord}">
                     <ScrollViewer>
                         <StackPanel Spacing="8" Margin="0,8,0,0">
                             <TextBlock Text="{Binding Form.Title}" FontSize="20" FontWeight="Bold" />
@@ -52,35 +53,35 @@
                                        IsVisible="{Binding Form.Error, Converter={x:Static ObjectConverters.IsNotNull}}" />
 
                             <Grid ColumnDefinitions="*,12,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
-                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Nom *" />
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static loc:L.LabelLastName}" />
                                 <TextBox  Grid.Row="1" Grid.Column="0" Text="{Binding Form.LastName}" />
-                                <TextBlock Grid.Row="0" Grid.Column="2" Text="Prénom *" />
+                                <TextBlock Grid.Row="0" Grid.Column="2" Text="{x:Static loc:L.LabelFirstName}" />
                                 <TextBox  Grid.Row="1" Grid.Column="2" Text="{Binding Form.FirstName}" />
 
-                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Date de naissance" Margin="0,8,0,0" />
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static loc:L.LabelBirthDate}" Margin="0,8,0,0" />
                                 <DatePicker Grid.Row="3" Grid.Column="0" SelectedDate="{Binding Form.BirthDate}" />
-                                <TextBlock Grid.Row="2" Grid.Column="2" Text="Sexe" Margin="0,8,0,0" />
+                                <TextBlock Grid.Row="2" Grid.Column="2" Text="{x:Static loc:L.LabelSex}" Margin="0,8,0,0" />
                                 <ComboBox Grid.Row="3" Grid.Column="2" SelectedIndex="{Binding Form.SexIndex}" MinWidth="160">
-                                    <ComboBoxItem>Inconnu</ComboBoxItem>
-                                    <ComboBoxItem>Masculin</ComboBoxItem>
-                                    <ComboBoxItem>Féminin</ComboBoxItem>
+                                    <ComboBoxItem Content="{x:Static loc:L.SexUnknown}" />
+                                    <ComboBoxItem Content="{x:Static loc:L.SexMale}" />
+                                    <ComboBoxItem Content="{x:Static loc:L.SexFemale}" />
                                 </ComboBox>
 
-                                <TextBlock Grid.Row="4" Grid.Column="0" Text="Téléphone" Margin="0,8,0,0" />
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="{x:Static loc:L.LabelPhone}" Margin="0,8,0,0" />
                                 <TextBox  Grid.Row="5" Grid.Column="0" Text="{Binding Form.Phone}" />
-                                <TextBlock Grid.Row="4" Grid.Column="2" Text="Email" Margin="0,8,0,0" />
+                                <TextBlock Grid.Row="4" Grid.Column="2" Text="{x:Static loc:L.LabelEmail}" Margin="0,8,0,0" />
                                 <TextBox  Grid.Row="5" Grid.Column="2" Text="{Binding Form.Email}" />
 
-                                <TextBlock Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Text="Adresse" Margin="0,8,0,0" />
+                                <TextBlock Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Text="{x:Static loc:L.LabelAddress}" Margin="0,8,0,0" />
                                 <TextBox  Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding Form.Address}" />
 
-                                <TextBlock Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" Text="Notes" Margin="0,8,0,0" />
+                                <TextBlock Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" Text="{x:Static loc:L.LabelNotes}" Margin="0,8,0,0" />
                                 <TextBox  Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3"
                                           Text="{Binding Form.Notes}"
                                           AcceptsReturn="True" MinHeight="80" TextWrapping="Wrap" />
                             </Grid>
 
-                            <Button Content="Enregistrer"
+                            <Button Content="{x:Static loc:L.Save}"
                                     Command="{Binding SaveCommand}"
                                     HorizontalAlignment="Right"
                                     Margin="0,8,0,0" />
@@ -88,19 +89,19 @@
                     </ScrollViewer>
                 </TabItem>
 
-                <TabItem Header="Consultations" IsEnabled="{Binding HasSavedPatient}">
+                <TabItem Header="{x:Static loc:L.TabConsultations}" IsEnabled="{Binding HasSavedPatient}">
                     <Grid RowDefinitions="Auto,*" Margin="0,8,0,0">
                         <Border Grid.Row="0" Padding="8" CornerRadius="4"
                                 Background="{DynamicResource SystemControlBackgroundListLowBrush}">
                             <StackPanel Spacing="6">
-                                <TextBlock Text="Nouvelle consultation" FontWeight="SemiBold" />
+                                <TextBlock Text="{x:Static loc:L.NewConsultation}" FontWeight="SemiBold" />
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <DatePicker SelectedDate="{Binding NewConsultationDate}" />
-                                    <TextBox Text="{Binding NewConsultationReason}" PlaceholderText="Motif" Width="260" />
+                                    <TextBox Text="{Binding NewConsultationReason}" PlaceholderText="{x:Static loc:L.ReasonPlaceholder}" Width="260" />
                                 </StackPanel>
-                                <TextBox Text="{Binding NewConsultationNotes}" PlaceholderText="Notes cliniques"
+                                <TextBox Text="{Binding NewConsultationNotes}" PlaceholderText="{x:Static loc:L.ClinicalNotesPlaceholder}"
                                          AcceptsReturn="True" MinHeight="60" TextWrapping="Wrap" />
-                                <Button Content="Ajouter" Command="{Binding AddConsultationCommand}"
+                                <Button Content="{x:Static loc:L.Add}" Command="{Binding AddConsultationCommand}"
                                         HorizontalAlignment="Right" />
                             </StackPanel>
                         </Border>
@@ -121,18 +122,18 @@
                     </Grid>
                 </TabItem>
 
-                <TabItem Header="Documents et photos" IsEnabled="{Binding HasSavedPatient}">
+                <TabItem Header="{x:Static loc:L.TabDocuments}" IsEnabled="{Binding HasSavedPatient}">
                     <Grid ColumnDefinitions="*,12,*" RowDefinitions="Auto,*" Margin="0,8,0,0">
                         <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
                                     Orientation="Horizontal" Spacing="8">
                             <ComboBox SelectedIndex="{Binding ImportCategoryIndex}" MinWidth="180">
-                                <ComboBoxItem>Document</ComboBoxItem>
-                                <ComboBoxItem>Photo intra-orale</ComboBoxItem>
-                                <ComboBoxItem>Photo extra-orale</ComboBoxItem>
-                                <ComboBoxItem>Radiographie</ComboBoxItem>
-                                <ComboBoxItem>Examen</ComboBoxItem>
+                                <ComboBoxItem Content="{x:Static loc:L.CategoryDocument}" />
+                                <ComboBoxItem Content="{x:Static loc:L.CategoryIntraOral}" />
+                                <ComboBoxItem Content="{x:Static loc:L.CategoryExtraOral}" />
+                                <ComboBoxItem Content="{x:Static loc:L.CategoryRadiography}" />
+                                <ComboBoxItem Content="{x:Static loc:L.CategoryExam}" />
                             </ComboBox>
-                            <Button Content="Importer des fichiers…" Click="OnImportClick" />
+                            <Button Content="{x:Static loc:L.ImportFiles}" Click="OnImportClick" />
                         </StackPanel>
 
                         <ListBox Grid.Row="1" Grid.Column="0" Margin="0,8,0,0"

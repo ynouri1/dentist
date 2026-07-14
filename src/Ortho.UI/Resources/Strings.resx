@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="AppTitle" xml:space="preserve"><value>Ortho — Gestion des patients</value></data>
+
+  <data name="LoginWindowTitle" xml:space="preserve"><value>Ortho — Connexion</value></data>
+  <data name="LoginTitleFirstRun" xml:space="preserve"><value>Bienvenue — créez le compte praticien</value></data>
+  <data name="LoginTitleUnlock" xml:space="preserve"><value>Session verrouillée</value></data>
+  <data name="LoginTitleDefault" xml:space="preserve"><value>Connexion</value></data>
+  <data name="LoginSubmitFirstRun" xml:space="preserve"><value>Créer le compte</value></data>
+  <data name="LoginSubmitUnlock" xml:space="preserve"><value>Déverrouiller</value></data>
+  <data name="LoginSubmitDefault" xml:space="preserve"><value>Se connecter</value></data>
+  <data name="LabelUsername" xml:space="preserve"><value>Identifiant</value></data>
+  <data name="LabelDisplayName" xml:space="preserve"><value>Nom affiché</value></data>
+  <data name="DisplayNamePlaceholder" xml:space="preserve"><value>Dr ...</value></data>
+  <data name="LabelRole" xml:space="preserve"><value>Rôle</value></data>
+  <data name="RolePraticien" xml:space="preserve"><value>Praticien</value></data>
+  <data name="RoleAssistante" xml:space="preserve"><value>Assistante</value></data>
+  <data name="LabelPassword" xml:space="preserve"><value>Mot de passe</value></data>
+  <data name="LabelPasswordConfirmation" xml:space="preserve"><value>Confirmation du mot de passe</value></data>
+  <data name="ErrorPasswordMismatch" xml:space="preserve"><value>Les deux mots de passe ne correspondent pas.</value></data>
+  <data name="ErrorBadCredentials" xml:space="preserve"><value>Identifiant ou mot de passe incorrect.</value></data>
+  <data name="ErrorUnexpected" xml:space="preserve"><value>Erreur inattendue : {0}</value></data>
+
+  <data name="SearchPlaceholder" xml:space="preserve"><value>Rechercher (nom, dossier, téléphone)…</value></data>
+  <data name="NewPatient" xml:space="preserve"><value>Nouveau patient</value></data>
+  <data name="BackupData" xml:space="preserve"><value>Sauvegarder les données</value></data>
+  <data name="Lock" xml:space="preserve"><value>Verrouiller</value></data>
+  <data name="TabRecord" xml:space="preserve"><value>Fiche</value></data>
+  <data name="TabConsultations" xml:space="preserve"><value>Consultations</value></data>
+  <data name="TabDocuments" xml:space="preserve"><value>Documents et photos</value></data>
+  <data name="LabelLastName" xml:space="preserve"><value>Nom *</value></data>
+  <data name="LabelFirstName" xml:space="preserve"><value>Prénom *</value></data>
+  <data name="LabelBirthDate" xml:space="preserve"><value>Date de naissance</value></data>
+  <data name="LabelSex" xml:space="preserve"><value>Sexe</value></data>
+  <data name="SexUnknown" xml:space="preserve"><value>Inconnu</value></data>
+  <data name="SexMale" xml:space="preserve"><value>Masculin</value></data>
+  <data name="SexFemale" xml:space="preserve"><value>Féminin</value></data>
+  <data name="LabelPhone" xml:space="preserve"><value>Téléphone</value></data>
+  <data name="LabelEmail" xml:space="preserve"><value>Email</value></data>
+  <data name="LabelAddress" xml:space="preserve"><value>Adresse</value></data>
+  <data name="LabelNotes" xml:space="preserve"><value>Notes</value></data>
+  <data name="Save" xml:space="preserve"><value>Enregistrer</value></data>
+
+  <data name="NewConsultation" xml:space="preserve"><value>Nouvelle consultation</value></data>
+  <data name="ReasonPlaceholder" xml:space="preserve"><value>Motif</value></data>
+  <data name="ClinicalNotesPlaceholder" xml:space="preserve"><value>Notes cliniques</value></data>
+  <data name="Add" xml:space="preserve"><value>Ajouter</value></data>
+
+  <data name="CategoryDocument" xml:space="preserve"><value>Document</value></data>
+  <data name="CategoryIntraOral" xml:space="preserve"><value>Photo intra-orale</value></data>
+  <data name="CategoryExtraOral" xml:space="preserve"><value>Photo extra-orale</value></data>
+  <data name="CategoryRadiography" xml:space="preserve"><value>Radiographie</value></data>
+  <data name="CategoryExam" xml:space="preserve"><value>Examen</value></data>
+  <data name="ImportFiles" xml:space="preserve"><value>Importer des fichiers…</value></data>
+  <data name="ImportDialogTitle" xml:space="preserve"><value>Importer des documents</value></data>
+  <data name="ImportFilterName" xml:space="preserve"><value>Images et documents</value></data>
+
+  <data name="StatusSaved" xml:space="preserve"><value>Dossier {0} enregistré.</value></data>
+  <data name="StatusConsultationAdded" xml:space="preserve"><value>Consultation ajoutée.</value></data>
+  <data name="StatusImported" xml:space="preserve"><value>Importé : {0}</value></data>
+  <data name="StatusBackupCreated" xml:space="preserve"><value>Sauvegarde créée : {0}</value></data>
+  <data name="StatusBackupFailed" xml:space="preserve"><value>Échec de la sauvegarde : {0}</value></data>
+  <data name="StatusPreviewFailed" xml:space="preserve"><value>Aperçu impossible : {0}</value></data>
+
+  <data name="FormTitleNew" xml:space="preserve"><value>Nouveau patient</value></data>
+  <data name="FormTitleRecord" xml:space="preserve"><value>Dossier {0}</value></data>
+</root>

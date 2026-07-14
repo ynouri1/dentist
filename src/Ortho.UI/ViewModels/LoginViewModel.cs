@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using Ortho.Application.Patients;
 using Ortho.Application.Users;
 using Ortho.Domain.Entities;
+using Ortho.UI.Localization;
 
 namespace Ortho.UI.ViewModels;
 
@@ -36,16 +37,16 @@ public partial class LoginViewModel(UserService users) : ViewModelBase
 
     public string Title => Mode switch
     {
-        LoginMode.FirstRun => "Bienvenue — créez le compte praticien",
-        LoginMode.Unlock => "Session verrouillée",
-        _ => "Connexion",
+        LoginMode.FirstRun => L.LoginTitleFirstRun,
+        LoginMode.Unlock => L.LoginTitleUnlock,
+        _ => L.LoginTitleDefault,
     };
 
     public string SubmitLabel => Mode switch
     {
-        LoginMode.FirstRun => "Créer le compte",
-        LoginMode.Unlock => "Déverrouiller",
-        _ => "Se connecter",
+        LoginMode.FirstRun => L.LoginSubmitFirstRun,
+        LoginMode.Unlock => L.LoginSubmitUnlock,
+        _ => L.LoginSubmitDefault,
     };
 
     partial void OnModeChanged(LoginMode value)
@@ -70,7 +71,7 @@ public partial class LoginViewModel(UserService users) : ViewModelBase
             {
                 if (Password != PasswordConfirmation)
                 {
-                    Error = "Les deux mots de passe ne correspondent pas.";
+                    Error = L.ErrorPasswordMismatch;
                     return;
                 }
                 await users.CreateAsync(Username, DisplayName, Password, (UserRole)RoleIndex);
@@ -79,7 +80,7 @@ public partial class LoginViewModel(UserService users) : ViewModelBase
             var user = await users.AuthenticateAsync(Username, Password);
             if (user is null)
             {
-                Error = "Identifiant ou mot de passe incorrect.";
+                Error = L.ErrorBadCredentials;
                 return;
             }
 
@@ -93,7 +94,7 @@ public partial class LoginViewModel(UserService users) : ViewModelBase
         }
         catch (Exception ex)
         {
-            Error = $"Erreur inattendue : {ex.Message}";
+            Error = L.F("ErrorUnexpected", ex.Message);
         }
         finally
         {

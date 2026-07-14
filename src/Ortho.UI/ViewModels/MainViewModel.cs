@@ -10,6 +10,7 @@ using Ortho.Application.Documents;
 using Ortho.Application.Patients;
 using Ortho.Domain.Entities;
 using Ortho.Infrastructure.Backup;
+using Ortho.UI.Localization;
 
 namespace Ortho.UI.ViewModels;
 
@@ -103,7 +104,7 @@ public partial class MainViewModel : ViewModelBase
                 ? await _patients.UpdateAsync(id, Form.ToDraft())
                 : await _patients.CreateAsync(Form.ToDraft());
 
-            StatusMessage = $"Dossier {saved.FileNumber} enregistré.";
+            StatusMessage = L.F("StatusSaved", saved.FileNumber);
             await RefreshAsync();
             Form = PatientFormViewModel.From(saved);
         }
@@ -130,7 +131,7 @@ public partial class MainViewModel : ViewModelBase
             NewConsultationReason = "";
             NewConsultationNotes = "";
             NewConsultationDate = DateTimeOffset.Now;
-            StatusMessage = "Consultation ajoutée.";
+            StatusMessage = L.Get("StatusConsultationAdded");
             await LoadRecordAsync(patientId);
         }
         catch (ValidationException ex)
@@ -147,11 +148,11 @@ public partial class MainViewModel : ViewModelBase
             var targetDirectory = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Ortho Sauvegardes");
             var archive = await Task.Run(() => _backup.ExportTo(targetDirectory));
-            StatusMessage = $"Sauvegarde créée : {archive}";
+            StatusMessage = L.F("StatusBackupCreated", archive);
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Échec de la sauvegarde : {ex.Message}";
+            StatusMessage = L.F("StatusBackupFailed", ex.Message);
         }
     }
 
@@ -165,7 +166,7 @@ public partial class MainViewModel : ViewModelBase
         {
             var document = await _documents.ImportAsync(
                 patientId, content, fileName, (DocumentCategory)ImportCategoryIndex);
-            StatusMessage = $"Importé : {document.FileName}";
+            StatusMessage = L.F("StatusImported", document.FileName);
             await LoadRecordAsync(patientId);
         }
         catch (ValidationException ex)
@@ -205,7 +206,7 @@ public partial class MainViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Aperçu impossible : {ex.Message}";
+            StatusMessage = L.F("StatusPreviewFailed", ex.Message);
         }
     }
 }

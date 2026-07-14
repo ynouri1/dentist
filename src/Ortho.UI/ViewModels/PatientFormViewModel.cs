@@ -21,7 +21,9 @@ public partial class PatientFormViewModel : ViewModelBase
     [ObservableProperty] private string _notes = "";
     [ObservableProperty] private string? _error;
 
-    public string Title => Id is null ? "Nouveau patient" : $"Dossier {FileNumber}";
+    public string Title => Id is null
+        ? Localization.L.Get("FormTitleNew")
+        : Localization.L.F("FormTitleRecord", FileNumber);
 
     public static PatientFormViewModel From(Patient patient) => new()
     {
