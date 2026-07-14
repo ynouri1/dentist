@@ -1,15 +1,19 @@
+using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Ortho.Application.Patients;
 using Ortho.Domain.Entities;
+using Ortho.Infrastructure.Backup;
 
 namespace Ortho.UI.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
     private readonly PatientService _patients;
+    private readonly BackupService _backup;
 
     public ObservableCollection<Patient> Results { get; } = [];
 
@@ -18,10 +22,27 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty] private PatientFormViewModel? _form;
     [ObservableProperty] private string _statusMessage = "";
 
-    public MainViewModel(PatientService patients)
+    public MainViewModel(PatientService patients, BackupService backup)
     {
         _patients = patients;
+        _backup = backup;
         _ = RefreshAsync();
+    }
+
+    [RelayCommand]
+    private async Task BackupAsync()
+    {
+        try
+        {
+            var targetDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Ortho Sauvegardes");
+            var archive = await Task.Run(() => _backup.ExportTo(targetDirectory));
+            StatusMessage = $"Sauvegarde créée : {archive}";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Échec de la sauvegarde : {ex.Message}";
+        }
     }
 
     partial void OnSearchTextChanged(string value) => _ = RefreshAsync();

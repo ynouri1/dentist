@@ -1,11 +1,13 @@
 using System;
 using System.IO;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Ortho.Infrastructure;
+using Ortho.Infrastructure.Backup;
 using Ortho.Infrastructure.Persistence;
 using Ortho.UI.ViewModels;
 using Ortho.UI.Views;
@@ -38,8 +40,13 @@ public partial class App : Avalonia.Application
             .BuildServiceProvider();
 
         // Applique les migrations au démarrage : la base est toujours au bon schéma.
+        // Un snapshot est pris avant toute migration pour pouvoir revenir en arrière.
         using (var db = services.GetRequiredService<IDbContextFactory<OrthoDbContext>>().CreateDbContext())
+        {
+            if (db.Database.GetPendingMigrations().Any())
+                services.GetRequiredService<BackupService>().SnapshotDatabase();
             db.Database.Migrate();
+        }
 
         Log.Information("Application démarrée, données dans {DataDirectory}", dataDirectory);
 

@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Ortho.Application.Abstractions;
 using Ortho.Application.Patients;
 using Ortho.Infrastructure.Audit;
+using Ortho.Infrastructure.Backup;
 using Ortho.Infrastructure.Persistence;
 using Ortho.Infrastructure.Security;
 using Ortho.Infrastructure.Storage;
@@ -36,6 +37,7 @@ public static class DependencyInjection
         services.AddSingleton<IPatientRepository, PatientRepository>();
         services.AddSingleton<IAuditTrail, DbAuditTrail>();
         services.AddSingleton<PatientService>();
+        services.AddSingleton(new BackupService(options));
 
         return services;
     }

@@ -13,6 +13,7 @@
         <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="12">
             <TextBox Text="{Binding SearchText}" Watermark="Rechercher (nom, dossier, téléphone)…" Width="320" />
             <Button Content="Nouveau patient" Command="{Binding NewPatientCommand}" />
+            <Button Content="Sauvegarder les données" Command="{Binding BackupCommand}" />
         </StackPanel>
 
         <Grid Grid.Row="1" ColumnDefinitions="380,*" Margin="12,0,12,0">
