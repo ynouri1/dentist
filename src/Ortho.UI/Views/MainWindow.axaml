@@ -1,22 +1,86 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Ortho.UI.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Ortho.UI.Views.MainWindow"
         x:DataType="vm:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="Ortho.UI">
+        Title="Ortho — Gestion des patients"
+        Width="1100" Height="700">
 
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainViewModel />
-    </Design.DataContext>
+    <Grid RowDefinitions="Auto,*,Auto">
 
-    <TextBox Text="{Binding Greeting}"
-             HorizontalAlignment="Center"
-             VerticalAlignment="Center" />
+        <!-- Barre d'outils -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="12">
+            <TextBox Text="{Binding SearchText}" Watermark="Rechercher (nom, dossier, téléphone)…" Width="320" />
+            <Button Content="Nouveau patient" Command="{Binding NewPatientCommand}" />
+        </StackPanel>
 
+        <Grid Grid.Row="1" ColumnDefinitions="380,*" Margin="12,0,12,0">
+
+            <!-- Liste des patients -->
+            <ListBox Grid.Column="0"
+                     ItemsSource="{Binding Results}"
+                     SelectedItem="{Binding SelectedPatient}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="4">
+                            <TextBlock Text="{Binding FullName}" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding FileNumber}" Opacity="0.6" FontSize="12" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <!-- Fiche patient -->
+            <ScrollViewer Grid.Column="1" Margin="16,0,0,0">
+                <StackPanel Spacing="8" IsVisible="{Binding Form, Converter={x:Static ObjectConverters.IsNotNull}}">
+                    <TextBlock Text="{Binding Form.Title}" FontSize="20" FontWeight="Bold" />
+
+                    <TextBlock Text="{Binding Form.Error}"
+                               Foreground="Red"
+                               TextWrapping="Wrap"
+                               IsVisible="{Binding Form.Error, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                    <Grid ColumnDefinitions="*,12,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Nom *" />
+                        <TextBox  Grid.Row="1" Grid.Column="0" Text="{Binding Form.LastName}" />
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Prénom *" />
+                        <TextBox  Grid.Row="1" Grid.Column="2" Text="{Binding Form.FirstName}" />
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Date de naissance" Margin="0,8,0,0" />
+                        <DatePicker Grid.Row="3" Grid.Column="0" SelectedDate="{Binding Form.BirthDate}" />
+                        <TextBlock Grid.Row="2" Grid.Column="2" Text="Sexe" Margin="0,8,0,0" />
+                        <ComboBox Grid.Row="3" Grid.Column="2" SelectedIndex="{Binding Form.SexIndex}" MinWidth="160">
+                            <ComboBoxItem>Inconnu</ComboBoxItem>
+                            <ComboBoxItem>Masculin</ComboBoxItem>
+                            <ComboBoxItem>Féminin</ComboBoxItem>
+                        </ComboBox>
+
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Téléphone" Margin="0,8,0,0" />
+                        <TextBox  Grid.Row="5" Grid.Column="0" Text="{Binding Form.Phone}" />
+                        <TextBlock Grid.Row="4" Grid.Column="2" Text="Email" Margin="0,8,0,0" />
+                        <TextBox  Grid.Row="5" Grid.Column="2" Text="{Binding Form.Email}" />
+
+                        <TextBlock Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Text="Adresse" Margin="0,8,0,0" />
+                        <TextBox  Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding Form.Address}" />
+
+                        <TextBlock Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" Text="Notes" Margin="0,8,0,0" />
+                        <TextBox  Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3"
+                                  Text="{Binding Form.Notes}"
+                                  AcceptsReturn="True" MinHeight="80" TextWrapping="Wrap" />
+                    </Grid>
+
+                    <Button Content="Enregistrer"
+                            Command="{Binding SaveCommand}"
+                            HorizontalAlignment="Right"
+                            Margin="0,8,0,0" />
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
+        <!-- Barre de statut -->
+        <Border Grid.Row="2" Padding="12,6" Background="{DynamicResource SystemControlBackgroundListLowBrush}">
+            <TextBlock Text="{Binding StatusMessage}" FontSize="12" />
+        </Border>
+    </Grid>
 </Window>
