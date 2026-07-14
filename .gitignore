@@ -485,3 +485,7 @@ $RECYCLE.BIN/
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# Exception : nos dossiers source Backup/ (la regle Backup*/ ci-dessus vise les conversions VS)
+!src/**/Backup/
+!src/**/Backup/**
