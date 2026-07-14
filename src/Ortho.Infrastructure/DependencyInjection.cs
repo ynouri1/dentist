@@ -2,7 +2,9 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Ortho.Application.Abstractions;
+using Ortho.Application.Documents;
 using Ortho.Application.Patients;
+using Ortho.Application.Users;
 using Ortho.Infrastructure.Audit;
 using Ortho.Infrastructure.Backup;
 using Ortho.Infrastructure.Persistence;
@@ -35,8 +37,13 @@ public static class DependencyInjection
         services.AddSingleton<IObjectStore>(
             new EncryptedFileObjectStore(Path.Combine(options.DataDirectory, "objects"), objectStoreKey));
         services.AddSingleton<IPatientRepository, PatientRepository>();
+        services.AddSingleton<IUserRepository, UserRepository>();
         services.AddSingleton<IAuditTrail, DbAuditTrail>();
+        services.AddSingleton<CurrentUserContext>();
+        services.AddSingleton<ICurrentUser>(sp => sp.GetRequiredService<CurrentUserContext>());
         services.AddSingleton<PatientService>();
+        services.AddSingleton<UserService>();
+        services.AddSingleton<DocumentService>();
         services.AddSingleton(new BackupService(options));
 
         return services;

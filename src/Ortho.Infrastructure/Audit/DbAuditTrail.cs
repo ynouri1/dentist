@@ -7,14 +7,14 @@ using Serilog;
 namespace Ortho.Infrastructure.Audit;
 
 /// <summary>Journalise en base (trace durable) et dans le log applicatif.</summary>
-public class DbAuditTrail(IDbContextFactory<OrthoDbContext> contextFactory) : IAuditTrail
+public class DbAuditTrail(IDbContextFactory<OrthoDbContext> contextFactory, ICurrentUser currentUser) : IAuditTrail
 {
     public async Task RecordAsync(string action, string entityType, string entityId, string? details = null, CancellationToken ct = default)
     {
         var entry = new AuditEntry
         {
             TimestampUtc = DateTime.UtcNow,
-            User = Environment.UserName,
+            User = currentUser.Name,
             Action = action,
             EntityType = entityType,
             EntityId = entityId,

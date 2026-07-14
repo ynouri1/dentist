@@ -1,0 +1,48 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Ortho.UI.ViewModels"
+        x:Class="Ortho.UI.Views.LoginWindow"
+        x:DataType="vm:LoginViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Ortho — Connexion"
+        Width="420" SizeToContent="Height"
+        WindowStartupLocation="CenterScreen"
+        CanResize="False">
+
+    <StackPanel Margin="32" Spacing="10">
+        <TextBlock Text="{Binding Title}" FontSize="20" FontWeight="Bold" />
+
+        <TextBlock Text="{Binding Error}"
+                   Foreground="Red" TextWrapping="Wrap"
+                   IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+        <TextBlock Text="Identifiant" />
+        <TextBox Text="{Binding Username}" IsEnabled="{Binding !IsUnlock}" />
+
+        <StackPanel Spacing="10" IsVisible="{Binding IsFirstRun}">
+            <TextBlock Text="Nom affiché" />
+            <TextBox Text="{Binding DisplayName}" PlaceholderText="Dr ..." />
+            <TextBlock Text="Rôle" />
+            <ComboBox SelectedIndex="{Binding RoleIndex}" HorizontalAlignment="Stretch">
+                <ComboBoxItem>Praticien</ComboBoxItem>
+                <ComboBoxItem>Assistante</ComboBoxItem>
+            </ComboBox>
+        </StackPanel>
+
+        <TextBlock Text="Mot de passe" />
+        <TextBox Text="{Binding Password}" PasswordChar="•" />
+
+        <StackPanel Spacing="10" IsVisible="{Binding IsFirstRun}">
+            <TextBlock Text="Confirmation du mot de passe" />
+            <TextBox Text="{Binding PasswordConfirmation}" PasswordChar="•" />
+        </StackPanel>
+
+        <Button Content="{Binding SubmitLabel}"
+                Command="{Binding SubmitCommand}"
+                IsDefault="True"
+                IsEnabled="{Binding !Busy}"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                Margin="0,12,0,0" />
+    </StackPanel>
+</Window>

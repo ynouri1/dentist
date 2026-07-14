@@ -14,4 +14,7 @@ public interface IPatientRepository
 
     /// <summary>Prochain numéro de dossier pour l'année en cours (ex. P-2026-0042).</summary>
     Task<string> NextFileNumberAsync(CancellationToken ct = default);
+
+    Task AddConsultationAsync(Consultation consultation, CancellationToken ct = default);
+    Task AddDocumentAsync(PatientDocument document, CancellationToken ct = default);
 }

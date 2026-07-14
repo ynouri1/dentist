@@ -50,6 +50,27 @@ public class PatientService(IPatientRepository repository, IAuditTrail audit)
         return patient;
     }
 
+    public async Task<Consultation> AddConsultationAsync(
+        Guid patientId, DateTime date, string? reason, string? notes, CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(reason) && string.IsNullOrWhiteSpace(notes))
+            throw new ValidationException(["Le motif ou les notes de la consultation sont obligatoires."]);
+
+        var consultation = new Consultation
+        {
+            PatientId = patientId,
+            Date = date,
+            Reason = Normalize(reason),
+            Notes = Normalize(notes),
+            CreatedAtUtc = DateTime.UtcNow,
+        };
+
+        await repository.AddConsultationAsync(consultation, ct);
+        await audit.RecordAsync("consultation.create", nameof(Consultation), consultation.Id.ToString(),
+            $"patient {patientId}", ct);
+        return consultation;
+    }
+
     private static void Apply(PatientDraft draft, Patient patient)
     {
         patient.FirstName = draft.FirstName.Trim();

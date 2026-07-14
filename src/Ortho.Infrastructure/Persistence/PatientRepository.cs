@@ -51,6 +51,20 @@ public class PatientRepository(IDbContextFactory<OrthoDbContext> contextFactory)
         await db.SaveChangesAsync(ct);
     }
 
+    public async Task AddConsultationAsync(Consultation consultation, CancellationToken ct = default)
+    {
+        await using var db = await contextFactory.CreateDbContextAsync(ct);
+        db.Consultations.Add(consultation);
+        await db.SaveChangesAsync(ct);
+    }
+
+    public async Task AddDocumentAsync(PatientDocument document, CancellationToken ct = default)
+    {
+        await using var db = await contextFactory.CreateDbContextAsync(ct);
+        db.Documents.Add(document);
+        await db.SaveChangesAsync(ct);
+    }
+
     public async Task<string> NextFileNumberAsync(CancellationToken ct = default)
     {
         await using var db = await contextFactory.CreateDbContextAsync(ct);

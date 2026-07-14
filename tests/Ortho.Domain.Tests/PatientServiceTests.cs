@@ -26,6 +26,21 @@ public class PatientServiceTests
 
         public Task<string> NextFileNumberAsync(CancellationToken ct = default)
             => Task.FromResult($"P-{DateTime.Today.Year}-{Added.Count + 1:D4}");
+
+        public List<Consultation> Consultations { get; } = [];
+        public List<PatientDocument> Documents { get; } = [];
+
+        public Task AddConsultationAsync(Consultation consultation, CancellationToken ct = default)
+        {
+            Consultations.Add(consultation);
+            return Task.CompletedTask;
+        }
+
+        public Task AddDocumentAsync(PatientDocument document, CancellationToken ct = default)
+        {
+            Documents.Add(document);
+            return Task.CompletedTask;
+        }
     }
 
     private sealed class FakeAudit : IAuditTrail
@@ -84,6 +99,26 @@ public class PatientServiceTests
 
         await Assert.ThrowsAsync<ValidationException>(
             () => service.CreateAsync(new PatientDraft { FirstName = firstName, LastName = lastName }));
+    }
+
+    [Fact]
+    public async Task AddConsultation_requires_reason_or_notes()
+    {
+        var (service, _, _) = CreateService();
+
+        await Assert.ThrowsAsync<ValidationException>(
+            () => service.AddConsultationAsync(Guid.NewGuid(), DateTime.Now, reason: "  ", notes: null));
+    }
+
+    [Fact]
+    public async Task AddConsultation_records_audit()
+    {
+        var (service, repo, audit) = CreateService();
+
+        await service.AddConsultationAsync(Guid.NewGuid(), DateTime.Now, "Contrôle", "RAS");
+
+        Assert.Single(repo.Consultations);
+        Assert.Contains("consultation.create", audit.Actions);
     }
 
     [Fact]

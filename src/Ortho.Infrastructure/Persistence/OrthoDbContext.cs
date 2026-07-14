@@ -10,6 +10,7 @@ public class OrthoDbContext(DbContextOptions<OrthoDbContext> options) : DbContex
     public DbSet<Consultation> Consultations => Set<Consultation>();
     public DbSet<PatientDocument> Documents => Set<PatientDocument>();
     public DbSet<AuditEntry> AuditEntries => Set<AuditEntry>();
+    public DbSet<AppUser> Users => Set<AppUser>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -38,6 +39,13 @@ public class OrthoDbContext(DbContextOptions<OrthoDbContext> options) : DbContex
         {
             document.Property(d => d.FileName).HasMaxLength(260);
             document.Property(d => d.StorageKey).HasMaxLength(512);
+        });
+
+        modelBuilder.Entity<AppUser>(user =>
+        {
+            user.Property(u => u.Username).HasMaxLength(64);
+            user.HasIndex(u => u.Username).IsUnique();
+            user.Property(u => u.DisplayName).HasMaxLength(128);
         });
 
         modelBuilder.Entity<AuditEntry>(audit =>
