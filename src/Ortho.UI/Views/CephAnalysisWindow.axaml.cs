@@ -1,6 +1,10 @@
+using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
+using Avalonia.Platform.Storage;
 using Ortho.UI.Controls;
+using Ortho.UI.Localization;
 using Ortho.UI.ViewModels;
 
 namespace Ortho.UI.Views;
@@ -36,6 +40,20 @@ public partial class CephAnalysisWindow : Window
             _viewModel.GetPlacedLandmarks(),
             _viewModel.GetTraceLines(),
             _viewModel.HasCurrentLandmark);
+    }
+
+    private async void OnReportClick(object? sender, RoutedEventArgs e)
+    {
+        // L'archivage dans le dossier patient est automatique ; l'export fichier est optionnel.
+        var file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = L.Get("ReportSaveTitle"),
+            SuggestedFileName =
+                $"rapport-{_viewModel.SelectedTemplate.Code}-{DateTime.Now:yyyyMMdd}.pdf",
+            FileTypeChoices = [new FilePickerFileType("PDF") { Patterns = ["*.pdf"] }],
+        });
+
+        await _viewModel.GenerateReportAsync(file?.Path.LocalPath);
     }
 
     private void OnBrightnessChanged(object? sender, RangeBaseValueChangedEventArgs e)

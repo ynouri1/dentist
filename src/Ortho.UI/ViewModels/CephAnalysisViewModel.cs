@@ -10,6 +10,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Ortho.Application.Cephalometry;
 using Ortho.Application.Imaging;
+using Ortho.Application.Patients;
 using Ortho.Domain.Cephalometry;
 using Ortho.Domain.Entities;
 using Ortho.UI.Controls;
@@ -31,7 +32,8 @@ public partial class LandmarkItemViewModel(LandmarkDefinition definition) : View
 
 public record MeasureRow(string Name, string Value, string Norm, IBrush StatusBrush, string DeviationText);
 
-public partial class CephAnalysisViewModel(MedicalImage image, CephalometryService ceph, ImagingService imaging)
+public partial class CephAnalysisViewModel(
+    MedicalImage image, CephalometryService ceph, ImagingService imaging, Ortho.Reporting.ReportService reports)
     : ViewModelBase
 {
     private CephAnalysis? _analysis;
@@ -153,6 +155,28 @@ public partial class CephAnalysisViewModel(MedicalImage image, CephalometryServi
             await ceph.RemoveLandmarkAsync(_analysis.Id, code);
         }
         RefreshState();
+    }
+
+    /// <summary>Génère le rapport PDF : archivé dans le dossier patient, copie exportée si chemin fourni.</summary>
+    public async Task GenerateReportAsync(string? exportPath)
+    {
+        try
+        {
+            var (pdf, archived) = await reports.GenerateCephReportAsync(Image, SelectedTemplate.Code);
+            if (exportPath is not null)
+            {
+                await File.WriteAllBytesAsync(exportPath, pdf);
+                StatusMessage = L.F("ReportExported", exportPath);
+            }
+            else
+            {
+                StatusMessage = L.F("ReportArchived", archived.FileName);
+            }
+        }
+        catch (ValidationException ex)
+        {
+            StatusMessage = ex.Message;
+        }
     }
 
     [RelayCommand]

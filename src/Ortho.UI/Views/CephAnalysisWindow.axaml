@@ -26,6 +26,7 @@
             </ComboBox>
             <Button Content="{x:Static loc:L.UndoPoint}" Command="{Binding UndoCommand}" />
             <Button Content="{x:Static loc:L.RedoPoint}" Command="{Binding RedoCommand}" />
+            <Button Content="{x:Static loc:L.ReportPdf}" Click="OnReportClick" />
 
             <Separator Width="12" />
             <TextBlock Text="{x:Static loc:L.BrightnessLabel}" VerticalAlignment="Center" />

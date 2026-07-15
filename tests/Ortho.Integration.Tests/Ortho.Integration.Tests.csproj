@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Ortho.Infrastructure\Ortho.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Ortho.Reporting\Ortho.Reporting.csproj" />
   </ItemGroup>
 
   <ItemGroup>

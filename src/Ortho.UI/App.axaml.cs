@@ -39,6 +39,7 @@ public partial class App : Avalonia.Application
 
         _services = new ServiceCollection()
             .AddOrthoInfrastructure(new OrthoDataOptions(dataDirectory))
+            .AddSingleton<Ortho.Reporting.ReportService>()
             .AddSingleton<MainViewModel>()
             .BuildServiceProvider();
 

@@ -132,4 +132,9 @@
   <data name="SuperpositionSelectImages" xml:space="preserve"><value>Choisissez les deux images à comparer.</value></data>
   <data name="SuperpositionMissing" xml:space="preserve"><value>Analyse « {0} » absente ou points S/N non placés sur l'une des deux images.</value></data>
   <data name="SuperpositionHint" xml:space="preserve"><value>Tracés recalés sur S–N : T0 en cyan, T1 en orange.</value></data>
+
+  <data name="ReportPdf" xml:space="preserve"><value>Rapport PDF</value></data>
+  <data name="ReportSaveTitle" xml:space="preserve"><value>Exporter le rapport PDF</value></data>
+  <data name="ReportExported" xml:space="preserve"><value>Rapport exporté : {0} (copie archivée dans le dossier patient)</value></data>
+  <data name="ReportArchived" xml:space="preserve"><value>Rapport archivé dans le dossier patient : {0}</value></data>
 </root>
