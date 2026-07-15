@@ -5,6 +5,7 @@ using Ortho.Application.Abstractions;
 using Ortho.Application.Documents;
 using Ortho.Application.Patients;
 using Ortho.Application.Users;
+using Ortho.Application.Cephalometry;
 using Ortho.Application.Imaging;
 using Ortho.Infrastructure.Audit;
 using Ortho.Infrastructure.Backup;
@@ -48,6 +49,8 @@ public static class DependencyInjection
         services.AddSingleton<DocumentService>();
         services.AddSingleton<IMedicalImageDecoder, MedicalImageDecoder>();
         services.AddSingleton<ImagingService>();
+        services.AddSingleton<ICephRepository, CephRepository>();
+        services.AddSingleton<CephalometryService>();
         services.AddSingleton(new BackupService(options));
 
         return services;

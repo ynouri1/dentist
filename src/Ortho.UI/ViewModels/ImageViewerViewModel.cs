@@ -77,6 +77,37 @@ public partial class ImageViewerViewModel(MedicalImage image, ImagingService ima
         }
     }
 
+    /// <summary>Règle étalon tracée dans le viewer : mm saisis + pixels mesurés.</summary>
+    public async Task CalibrateAsync(string millimetersText, double pixels)
+    {
+        if (!double.TryParse(
+                millimetersText.Replace(',', '.'),
+                System.Globalization.NumberStyles.Float,
+                CultureInfo.InvariantCulture,
+                out var millimeters) || millimeters <= 0 || pixels <= 0)
+        {
+            StatusMessage = L.Get("CalibrationInvalidInput");
+            return;
+        }
+
+        try
+        {
+            var updated = await imaging.CalibrateManuallyAsync(Image.Id, millimeters, pixels);
+            Image.PixelSpacingXMm = updated.PixelSpacingXMm;
+            Image.PixelSpacingYMm = updated.PixelSpacingYMm;
+            Image.CalibrationSource = updated.CalibrationSource;
+
+            StatusMessage = L.F("StatusCalibrated",
+                updated.PixelSpacingXMm!.Value.ToString("F4", CultureInfo.CurrentCulture));
+            OnPropertyChanged(nameof(CalibrationLabel));
+            await LoadAsync(); // recalcule les libellés (px → mm) des mesures existantes
+        }
+        catch (ValidationException ex)
+        {
+            StatusMessage = ex.Message;
+        }
+    }
+
     [RelayCommand]
     private async Task DeleteLastAsync()
     {

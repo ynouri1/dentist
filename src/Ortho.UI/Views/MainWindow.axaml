@@ -129,6 +129,8 @@
                             <Button Content="{x:Static loc:L.ImportImages}" Click="OnImportImagesClick" />
                             <Button Content="{x:Static loc:L.OpenViewer}" Click="OnOpenViewerClick"
                                     IsEnabled="{Binding SelectedImage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            <Button Content="{x:Static loc:L.Cephalometry}" Click="OnCephalometryClick"
+                                    IsEnabled="{Binding SelectedImage, Converter={x:Static ObjectConverters.IsNotNull}}" />
                             <Button Content="{x:Static loc:L.DeleteImage}" Click="OnDeleteImageClick"
                                     IsEnabled="{Binding SelectedImage, Converter={x:Static ObjectConverters.IsNotNull}}" />
                             <TextBlock Text="{Binding SelectedImageCalibration}"

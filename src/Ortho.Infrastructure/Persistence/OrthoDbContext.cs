@@ -13,6 +13,8 @@ public class OrthoDbContext(DbContextOptions<OrthoDbContext> options) : DbContex
     public DbSet<AppUser> Users => Set<AppUser>();
     public DbSet<MedicalImage> Images => Set<MedicalImage>();
     public DbSet<ImageAnnotation> Annotations => Set<ImageAnnotation>();
+    public DbSet<CephAnalysis> CephAnalyses => Set<CephAnalysis>();
+    public DbSet<CephLandmark> CephLandmarks => Set<CephLandmark>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -51,6 +53,29 @@ public class OrthoDbContext(DbContextOptions<OrthoDbContext> options) : DbContex
                 .WithOne()
                 .HasForeignKey(a => a.MedicalImageId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<CephAnalysis>(analysis =>
+        {
+            analysis.Property(a => a.TemplateCode).HasMaxLength(64);
+            analysis.Property(a => a.TemplateVersion).HasMaxLength(16);
+            analysis.HasIndex(a => new { a.MedicalImageId, a.TemplateCode }).IsUnique();
+
+            analysis.HasOne<MedicalImage>()
+                .WithMany()
+                .HasForeignKey(a => a.MedicalImageId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            analysis.HasMany(a => a.Landmarks)
+                .WithOne()
+                .HasForeignKey(l => l.AnalysisId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<CephLandmark>(landmark =>
+        {
+            landmark.Property(l => l.Code).HasMaxLength(16);
+            landmark.HasIndex(l => new { l.AnalysisId, l.Code }).IsUnique();
         });
 
         modelBuilder.Entity<ImageAnnotation>(annotation =>

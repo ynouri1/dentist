@@ -25,6 +25,8 @@
                          Content="{x:Static loc:L.ToolArrow}" IsCheckedChanged="OnToolChanged" />
             <RadioButton x:Name="ToolText" GroupName="Tool"
                          Content="{x:Static loc:L.ToolText}" IsCheckedChanged="OnToolChanged" />
+            <RadioButton x:Name="ToolCalibrate" GroupName="Tool"
+                         Content="{x:Static loc:L.ToolCalibrate}" IsCheckedChanged="OnToolChanged" />
             <TextBox Text="{Binding AnnotationText}"
                      PlaceholderText="{x:Static loc:L.AnnotationTextPlaceholder}"
                      Width="200" />

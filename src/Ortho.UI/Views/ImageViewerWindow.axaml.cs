@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Ortho.UI.Controls;
+using Ortho.UI.Localization;
 using Ortho.UI.ViewModels;
 
 namespace Ortho.UI.Views;
@@ -34,6 +35,13 @@ public partial class ImageViewerWindow : Window
         };
         viewModel.Annotations.CollectionChanged += (_, _) => PushAnnotations();
         Viewer.AnnotationCompleted += async (type, points) => await viewModel.AddAnnotationAsync(type, points);
+        Viewer.CalibrationMeasured += async pixels =>
+        {
+            var answer = await InputDialog.ShowAsync(
+                this, L.Get("CalibrationPromptTitle"), L.Get("CalibrationPromptMessage"));
+            if (!string.IsNullOrWhiteSpace(answer))
+                await viewModel.CalibrateAsync(answer, pixels);
+        };
     }
 
     private void PushAnnotations()
@@ -51,6 +59,7 @@ public partial class ImageViewerWindow : Window
             RadioButton rb when rb == ToolLine => ViewerTool.Line,
             RadioButton rb when rb == ToolArrow => ViewerTool.Arrow,
             RadioButton rb when rb == ToolText => ViewerTool.Text,
+            RadioButton rb when rb == ToolCalibrate => ViewerTool.Calibrate,
             _ => ViewerTool.Pan,
         };
     }

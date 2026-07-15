@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Globalization;
 using Ortho.Application.Abstractions;
+using Ortho.Application.Cephalometry;
 using Ortho.Application.Documents;
 using Ortho.Application.Imaging;
 using Ortho.Application.Patients;
@@ -22,6 +23,7 @@ public partial class MainViewModel : ViewModelBase
     private readonly PatientService _patients;
     private readonly DocumentService _documents;
     private readonly ImagingService _imaging;
+    private readonly CephalometryService _ceph;
     private readonly BackupService _backup;
     private readonly ICurrentUser _currentUser;
 
@@ -66,11 +68,12 @@ public partial class MainViewModel : ViewModelBase
 
     public MainViewModel(
         PatientService patients, DocumentService documents, ImagingService imaging,
-        BackupService backup, ICurrentUser currentUser)
+        CephalometryService ceph, BackupService backup, ICurrentUser currentUser)
     {
         _patients = patients;
         _documents = documents;
         _imaging = imaging;
+        _ceph = ceph;
         _backup = backup;
         _currentUser = currentUser;
         _ = RefreshAsync();
@@ -189,6 +192,10 @@ public partial class MainViewModel : ViewModelBase
     /// <summary>Viewer 2D de l'image sélectionnée ; null si aucune sélection.</summary>
     public ImageViewerViewModel? CreateViewerViewModel()
         => SelectedImage is { } image ? new ImageViewerViewModel(image, _imaging) : null;
+
+    /// <summary>Analyse céphalométrique de l'image sélectionnée ; null si aucune sélection.</summary>
+    public CephAnalysisViewModel? CreateCephViewModel()
+        => SelectedImage is { } image ? new CephAnalysisViewModel(image, _ceph, _imaging) : null;
 
     /// <summary>Suppression confirmée par la vue (dialogue) au préalable.</summary>
     public async Task DeleteSelectedImageAsync()

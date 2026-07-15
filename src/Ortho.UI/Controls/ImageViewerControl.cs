@@ -21,6 +21,8 @@ public enum ViewerTool
     Line,
     Arrow,
     Text,
+    /// <summary>Règle étalon : deux points sur une distance connue → calibration mm/pixel.</summary>
+    Calibrate,
 }
 
 /// <summary>Annotation prête à l'affichage : points image + libellé calculé (mm, degrés…).</summary>
@@ -62,6 +64,9 @@ public class ImageViewerControl : Control
 
     /// <summary>Points image (pixels) de l'annotation terminée ; le texte vient de la fenêtre.</summary>
     public event Action<AnnotationType, IReadOnlyList<ImagePoint>>? AnnotationCompleted;
+
+    /// <summary>Segment de règle étalon tracé : longueur en pixels image.</summary>
+    public event Action<double>? CalibrationMeasured;
 
     private SKBitmap? _bitmap;
     private IReadOnlyList<AnnotationDisplay> _annotations = [];
@@ -320,6 +325,16 @@ public class ImageViewerControl : Control
             case ViewerTool.Text:
                 AnnotationCompleted?.Invoke(AnnotationType.Text, [imagePoint]);
                 break;
+            case ViewerTool.Calibrate:
+                _pending.Add(imagePoint);
+                if (_pending.Count == 2)
+                {
+                    var pixels = GeometryCalculator.Distance(_pending[0], _pending[1]);
+                    _pending.Clear();
+                    _hoverScreen = null;
+                    CalibrationMeasured?.Invoke(pixels);
+                }
+                break;
         }
 
         _hoverScreen = pos;
@@ -374,55 +389,4 @@ public class ImageViewerControl : Control
         }
     }
 
-    private class SkiaImageDrawOperation(
-        Rect bounds, SKBitmap bitmap, Matrix matrix, double brightness, double contrast)
-        : ICustomDrawOperation
-    {
-        public Rect Bounds => bounds;
-
-        public void Dispose()
-        {
-        }
-
-        public bool Equals(ICustomDrawOperation? other) => false;
-
-        public bool HitTest(Point p) => bounds.Contains(p);
-
-        public void Render(ImmediateDrawingContext context)
-        {
-            var leaseFeature = context.TryGetFeature<ISkiaSharpApiLeaseFeature>();
-            if (leaseFeature is null)
-                return;
-
-            using var lease = leaseFeature.Lease();
-            var canvas = lease.SkCanvas;
-
-            canvas.Save();
-            canvas.Concat(ToSkMatrix(matrix));
-
-            using var paint = new SKPaint { IsAntialias = true, ColorFilter = CreateColorFilter(brightness, contrast) };
-            canvas.DrawBitmap(bitmap, 0, 0, paint);
-            canvas.Restore();
-        }
-
-        private static SKMatrix ToSkMatrix(Matrix m) => new(
-            (float)m.M11, (float)m.M21, (float)m.M31,
-            (float)m.M12, (float)m.M22, (float)m.M32,
-            0, 0, 1);
-
-        private static SKColorFilter CreateColorFilter(double brightness, double contrast)
-        {
-            // Contraste centré sur le gris moyen, luminosité en décalage pur.
-            // La colonne de translation de la matrice Skia est normalisée (1.0 = pleine échelle).
-            var factor = (float)Math.Clamp(1 + contrast, 0, 2);
-            var offset = (float)(brightness + 0.5 * (1 - factor));
-            return SKColorFilter.CreateColorMatrix(
-            [
-                factor, 0, 0, 0, offset,
-                0, factor, 0, 0, offset,
-                0, 0, factor, 0, offset,
-                0, 0, 0, 1, 0,
-            ]);
-        }
-    }
 }

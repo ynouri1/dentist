@@ -54,6 +54,17 @@ public partial class MainWindow : Window
         _ = viewerViewModel.LoadAsync();
     }
 
+    private void OnCephalometryClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not MainViewModel viewModel ||
+            viewModel.CreateCephViewModel() is not { } cephViewModel)
+            return;
+
+        var window = new CephAnalysisWindow(cephViewModel);
+        window.Show(this);
+        _ = cephViewModel.LoadAsync();
+    }
+
     private async void OnDeleteImageClick(object? sender, RoutedEventArgs e)
     {
         if (DataContext is not MainViewModel viewModel || viewModel.SelectedImage is not { } image)

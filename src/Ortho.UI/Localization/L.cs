@@ -95,4 +95,12 @@ public static class L
     public static string ContrastLabel => Get(nameof(ContrastLabel));
     public static string DeleteImage => Get(nameof(DeleteImage));
     public static string DeleteDocument => Get(nameof(DeleteDocument));
+
+    public static string Cephalometry => Get(nameof(Cephalometry));
+    public static string TemplateLabel => Get(nameof(TemplateLabel));
+    public static string LandmarksHeader => Get(nameof(LandmarksHeader));
+    public static string ResultsHeader => Get(nameof(ResultsHeader));
+    public static string UndoPoint => Get(nameof(UndoPoint));
+    public static string RedoPoint => Get(nameof(RedoPoint));
+    public static string ToolCalibrate => Get(nameof(ToolCalibrate));
 }

@@ -110,4 +110,18 @@
   <data name="Cancel" xml:space="preserve"><value>Annuler</value></data>
   <data name="StatusImageDeleted" xml:space="preserve"><value>Image supprimée : {0}</value></data>
   <data name="StatusDocumentDeleted" xml:space="preserve"><value>Document supprimé : {0}</value></data>
+
+  <data name="Cephalometry" xml:space="preserve"><value>Céphalométrie</value></data>
+  <data name="CephWindowTitle" xml:space="preserve"><value>Céphalométrie — {0}</value></data>
+  <data name="TemplateLabel" xml:space="preserve"><value>Analyse</value></data>
+  <data name="LandmarksHeader" xml:space="preserve"><value>Points à placer</value></data>
+  <data name="ResultsHeader" xml:space="preserve"><value>Mesures</value></data>
+  <data name="UndoPoint" xml:space="preserve"><value>Annuler</value></data>
+  <data name="RedoPoint" xml:space="preserve"><value>Rétablir</value></data>
+  <data name="CephPlacePrompt" xml:space="preserve"><value>Cliquez sur l'image pour placer : {0} — {1}</value></data>
+  <data name="CephComplete" xml:space="preserve"><value>Tous les points sont placés. Cliquez un point de la liste pour le repositionner, ou glissez-le sur l'image.</value></data>
+  <data name="ToolCalibrate" xml:space="preserve"><value>Règle étalon</value></data>
+  <data name="CalibrationPromptTitle" xml:space="preserve"><value>Règle étalon</value></data>
+  <data name="CalibrationPromptMessage" xml:space="preserve"><value>Longueur réelle du segment tracé, en millimètres :</value></data>
+  <data name="Ok" xml:space="preserve"><value>Valider</value></data>
 </root>
