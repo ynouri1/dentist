@@ -80,4 +80,17 @@ public static class L
     public static string CalibrationKnownMm => Get(nameof(CalibrationKnownMm));
     public static string CalibrationMeasuredPx => Get(nameof(CalibrationMeasuredPx));
     public static string Calibrate => Get(nameof(Calibrate));
+
+    public static string OpenViewer => Get(nameof(OpenViewer));
+    public static string ToolPan => Get(nameof(ToolPan));
+    public static string ToolDistance => Get(nameof(ToolDistance));
+    public static string ToolAngle => Get(nameof(ToolAngle));
+    public static string ToolLine => Get(nameof(ToolLine));
+    public static string ToolArrow => Get(nameof(ToolArrow));
+    public static string ToolText => Get(nameof(ToolText));
+    public static string AnnotationTextPlaceholder => Get(nameof(AnnotationTextPlaceholder));
+    public static string FitView => Get(nameof(FitView));
+    public static string DeleteLast => Get(nameof(DeleteLast));
+    public static string BrightnessLabel => Get(nameof(BrightnessLabel));
+    public static string ContrastLabel => Get(nameof(ContrastLabel));
 }

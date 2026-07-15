@@ -43,6 +43,17 @@ public partial class MainWindow : Window
         base.OnClosed(e);
     }
 
+    private void OnOpenViewerClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not MainViewModel viewModel ||
+            viewModel.CreateViewerViewModel() is not { } viewerViewModel)
+            return;
+
+        var viewer = new ImageViewerWindow(viewerViewModel);
+        viewer.Show(this);
+        _ = viewerViewModel.LoadAsync();
+    }
+
     private async void OnImportImagesClick(object? sender, RoutedEventArgs e)
     {
         if (DataContext is not MainViewModel viewModel)

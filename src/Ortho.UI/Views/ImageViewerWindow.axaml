@@ -1,0 +1,55 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Ortho.UI.ViewModels"
+        xmlns:controls="using:Ortho.UI.Controls"
+        xmlns:loc="using:Ortho.UI.Localization"
+        x:Class="Ortho.UI.Views.ImageViewerWindow"
+        x:DataType="vm:ImageViewerViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="{Binding Title}"
+        Width="1200" Height="820">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Barre d'outils -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="6" Margin="8">
+            <RadioButton x:Name="ToolPan" GroupName="Tool" IsChecked="True"
+                         Content="{x:Static loc:L.ToolPan}" IsCheckedChanged="OnToolChanged" />
+            <RadioButton x:Name="ToolDistance" GroupName="Tool"
+                         Content="{x:Static loc:L.ToolDistance}" IsCheckedChanged="OnToolChanged" />
+            <RadioButton x:Name="ToolAngle" GroupName="Tool"
+                         Content="{x:Static loc:L.ToolAngle}" IsCheckedChanged="OnToolChanged" />
+            <RadioButton x:Name="ToolLine" GroupName="Tool"
+                         Content="{x:Static loc:L.ToolLine}" IsCheckedChanged="OnToolChanged" />
+            <RadioButton x:Name="ToolArrow" GroupName="Tool"
+                         Content="{x:Static loc:L.ToolArrow}" IsCheckedChanged="OnToolChanged" />
+            <RadioButton x:Name="ToolText" GroupName="Tool"
+                         Content="{x:Static loc:L.ToolText}" IsCheckedChanged="OnToolChanged" />
+            <TextBox Text="{Binding AnnotationText}"
+                     PlaceholderText="{x:Static loc:L.AnnotationTextPlaceholder}"
+                     Width="200" />
+
+            <Separator Width="12" />
+            <Button Content="⟲ 90°" Click="OnRotateLeft" />
+            <Button Content="⟳ 90°" Click="OnRotateRight" />
+            <Button Content="{x:Static loc:L.FitView}" Click="OnFitView" />
+            <Button Content="{x:Static loc:L.DeleteLast}" Command="{Binding DeleteLastCommand}" />
+
+            <Separator Width="12" />
+            <TextBlock Text="{x:Static loc:L.BrightnessLabel}" VerticalAlignment="Center" />
+            <Slider x:Name="BrightnessSlider" Minimum="-1" Maximum="1" Value="0" Width="120"
+                    ValueChanged="OnBrightnessChanged" />
+            <TextBlock Text="{x:Static loc:L.ContrastLabel}" VerticalAlignment="Center" />
+            <Slider x:Name="ContrastSlider" Minimum="-1" Maximum="1" Value="0" Width="120"
+                    ValueChanged="OnContrastChanged" />
+        </StackPanel>
+
+        <controls:ImageViewerControl x:Name="Viewer" Grid.Row="1" />
+
+        <!-- Barre de statut -->
+        <Grid Grid.Row="2" ColumnDefinitions="*,Auto">
+            <TextBlock Grid.Column="0" Text="{Binding StatusMessage}" Margin="12,6" FontSize="12" />
+            <TextBlock Grid.Column="1" Text="{Binding CalibrationLabel}" Margin="12,6" FontSize="12" Opacity="0.7" />
+        </Grid>
+    </Grid>
+</Window>

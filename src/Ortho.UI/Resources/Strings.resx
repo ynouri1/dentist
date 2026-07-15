@@ -85,4 +85,20 @@
   <data name="StatusImageImportFailed" xml:space="preserve"><value>Import impossible : {0} Repli : exportez l'image en JPG depuis l'appareil et réimportez-la.</value></data>
   <data name="StatusCalibrated" xml:space="preserve"><value>Image calibrée : {0} mm/pixel.</value></data>
   <data name="CalibrationInvalidInput" xml:space="preserve"><value>Valeurs de calibration invalides : saisissez des nombres positifs.</value></data>
+
+  <data name="ViewerTitle" xml:space="preserve"><value>Viewer — {0}</value></data>
+  <data name="OpenViewer" xml:space="preserve"><value>Ouvrir dans le viewer</value></data>
+  <data name="ToolPan" xml:space="preserve"><value>Déplacer</value></data>
+  <data name="ToolDistance" xml:space="preserve"><value>Distance</value></data>
+  <data name="ToolAngle" xml:space="preserve"><value>Angle</value></data>
+  <data name="ToolLine" xml:space="preserve"><value>Trait</value></data>
+  <data name="ToolArrow" xml:space="preserve"><value>Flèche</value></data>
+  <data name="ToolText" xml:space="preserve"><value>Texte</value></data>
+  <data name="AnnotationTextPlaceholder" xml:space="preserve"><value>Texte de l'annotation…</value></data>
+  <data name="AnnotationTextRequired" xml:space="preserve"><value>Saisissez d'abord le texte de l'annotation.</value></data>
+  <data name="FitView" xml:space="preserve"><value>Ajuster</value></data>
+  <data name="DeleteLast" xml:space="preserve"><value>Supprimer la dernière</value></data>
+  <data name="BrightnessLabel" xml:space="preserve"><value>Luminosité</value></data>
+  <data name="ContrastLabel" xml:space="preserve"><value>Contraste</value></data>
+  <data name="MeasuresInPixels" xml:space="preserve"><value>Non calibrée — mesures en pixels</value></data>
 </root>

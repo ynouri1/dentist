@@ -37,6 +37,8 @@ public class MedicalImage
     public DateTime? AcquiredAt { get; set; }
     public DateTime ImportedAtUtc { get; set; }
 
+    public List<ImageAnnotation> Annotations { get; set; } = [];
+
     public bool IsCalibrated => CalibrationSource != CalibrationSource.None
         && PixelSpacingXMm is > 0 && PixelSpacingYMm is > 0;
 }

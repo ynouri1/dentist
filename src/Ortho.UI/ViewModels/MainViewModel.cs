@@ -186,6 +186,10 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
+    /// <summary>Viewer 2D de l'image sélectionnée ; null si aucune sélection.</summary>
+    public ImageViewerViewModel? CreateViewerViewModel()
+        => SelectedImage is { } image ? new ImageViewerViewModel(image, _imaging) : null;
+
     /// <summary>Appelé par la vue après le sélecteur de fichiers (onglet Imagerie).</summary>
     public async Task ImportImageAsync(Stream content, string fileName)
     {

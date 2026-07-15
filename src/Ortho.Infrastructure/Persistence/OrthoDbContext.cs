@@ -12,6 +12,7 @@ public class OrthoDbContext(DbContextOptions<OrthoDbContext> options) : DbContex
     public DbSet<AuditEntry> AuditEntries => Set<AuditEntry>();
     public DbSet<AppUser> Users => Set<AppUser>();
     public DbSet<MedicalImage> Images => Set<MedicalImage>();
+    public DbSet<ImageAnnotation> Annotations => Set<ImageAnnotation>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -45,6 +46,17 @@ public class OrthoDbContext(DbContextOptions<OrthoDbContext> options) : DbContex
             image.Property(i => i.Modality).HasMaxLength(16);
             image.Property(i => i.StorageKeyOriginal).HasMaxLength(512);
             image.Property(i => i.StorageKeyDisplay).HasMaxLength(512);
+
+            image.HasMany(i => i.Annotations)
+                .WithOne()
+                .HasForeignKey(a => a.MedicalImageId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<ImageAnnotation>(annotation =>
+        {
+            annotation.Property(a => a.PointsJson).HasMaxLength(4000);
+            annotation.Property(a => a.Text).HasMaxLength(512);
         });
 
         modelBuilder.Entity<Consultation>().HasIndex(c => c.Date);

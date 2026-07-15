@@ -156,6 +156,44 @@ public class ImagingTests : IDisposable
         Assert.Single(db.AuditEntries.Where(a => a.Action == "image.import.failed"));
     }
 
+    [Fact]
+    public async Task Annotations_persist_and_delete_with_audit()
+    {
+        await using var provider = BuildProvider();
+        var patients = provider.GetRequiredService<PatientService>();
+        var imaging = provider.GetRequiredService<ImagingService>();
+
+        var patient = await patients.CreateAsync(new PatientDraft { FirstName = "Aya", LastName = "Kacem" });
+        var image = await imaging.ImportAsync(patient.Id, new MemoryStream(CreateJpeg(50, 50)), "radio.jpg");
+
+        var distance = await imaging.AddAnnotationAsync(image.Id, AnnotationType.Distance,
+            [new ImagePoint(0, 0), new ImagePoint(30, 40)]);
+        await imaging.AddAnnotationAsync(image.Id, AnnotationType.Angle,
+            [new ImagePoint(10, 0), new ImagePoint(0, 0), new ImagePoint(0, 10)]);
+        await imaging.AddAnnotationAsync(image.Id, AnnotationType.Text,
+            [new ImagePoint(5, 5)], "Sinus");
+
+        // Nombre de points invalide → rejet.
+        await Assert.ThrowsAsync<ValidationException>(() => imaging.AddAnnotationAsync(
+            image.Id, AnnotationType.Distance, [new ImagePoint(0, 0)]));
+
+        var reloaded = await imaging.GetImageAsync(image.Id);
+        Assert.Equal(3, reloaded!.Annotations.Count);
+        var points = ImagingService.ParsePoints(
+            reloaded.Annotations.Single(a => a.Type == AnnotationType.Distance).PointsJson);
+        Assert.Equal(new ImagePoint(30, 40), points[1]);
+
+        await imaging.DeleteAnnotationAsync(distance.Id);
+        reloaded = await imaging.GetImageAsync(image.Id);
+        Assert.Equal(2, reloaded!.Annotations.Count);
+
+        await using var db = await provider
+            .GetRequiredService<IDbContextFactory<OrthoDbContext>>()
+            .CreateDbContextAsync();
+        Assert.Equal(3, db.AuditEntries.Count(a => a.Action == "image.annotate"));
+        Assert.Equal(1, db.AuditEntries.Count(a => a.Action == "image.annotation.delete"));
+    }
+
     /// <summary>
     /// Harnais du corpus réel (risque R1) : déposez des DICOM anonymisés de
     /// céphalostats tunisiens dans DicomCorpus/ et ce test les décode tous.

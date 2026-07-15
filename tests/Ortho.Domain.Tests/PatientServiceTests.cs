@@ -54,6 +54,20 @@ public class PatientServiceTests
             => Task.FromResult(Images.FirstOrDefault(i => i.Id == imageId));
 
         public Task UpdateImageAsync(MedicalImage image, CancellationToken ct = default) => Task.CompletedTask;
+
+        public List<ImageAnnotation> Annotations { get; } = [];
+
+        public Task AddAnnotationAsync(ImageAnnotation annotation, CancellationToken ct = default)
+        {
+            Annotations.Add(annotation);
+            return Task.CompletedTask;
+        }
+
+        public Task DeleteAnnotationAsync(Guid annotationId, CancellationToken ct = default)
+        {
+            Annotations.RemoveAll(a => a.Id == annotationId);
+            return Task.CompletedTask;
+        }
     }
 
     private sealed class FakeAudit : IAuditTrail

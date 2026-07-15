@@ -76,7 +76,10 @@ public class PatientRepository(IDbContextFactory<OrthoDbContext> contextFactory)
     public async Task<MedicalImage?> GetImageAsync(Guid imageId, CancellationToken ct = default)
     {
         await using var db = await contextFactory.CreateDbContextAsync(ct);
-        return await db.Images.AsNoTracking().FirstOrDefaultAsync(i => i.Id == imageId, ct);
+        return await db.Images
+            .Include(i => i.Annotations.OrderBy(a => a.CreatedAtUtc))
+            .AsNoTracking()
+            .FirstOrDefaultAsync(i => i.Id == imageId, ct);
     }
 
     public async Task UpdateImageAsync(MedicalImage image, CancellationToken ct = default)
@@ -84,6 +87,19 @@ public class PatientRepository(IDbContextFactory<OrthoDbContext> contextFactory)
         await using var db = await contextFactory.CreateDbContextAsync(ct);
         db.Images.Update(image);
         await db.SaveChangesAsync(ct);
+    }
+
+    public async Task AddAnnotationAsync(ImageAnnotation annotation, CancellationToken ct = default)
+    {
+        await using var db = await contextFactory.CreateDbContextAsync(ct);
+        db.Annotations.Add(annotation);
+        await db.SaveChangesAsync(ct);
+    }
+
+    public async Task DeleteAnnotationAsync(Guid annotationId, CancellationToken ct = default)
+    {
+        await using var db = await contextFactory.CreateDbContextAsync(ct);
+        await db.Annotations.Where(a => a.Id == annotationId).ExecuteDeleteAsync(ct);
     }
 
     public async Task<string> NextFileNumberAsync(CancellationToken ct = default)

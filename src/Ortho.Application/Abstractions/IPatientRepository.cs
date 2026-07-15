@@ -21,4 +21,7 @@ public interface IPatientRepository
     Task AddImageAsync(MedicalImage image, CancellationToken ct = default);
     Task<MedicalImage?> GetImageAsync(Guid imageId, CancellationToken ct = default);
     Task UpdateImageAsync(MedicalImage image, CancellationToken ct = default);
+
+    Task AddAnnotationAsync(ImageAnnotation annotation, CancellationToken ct = default);
+    Task DeleteAnnotationAsync(Guid annotationId, CancellationToken ct = default);
 }
