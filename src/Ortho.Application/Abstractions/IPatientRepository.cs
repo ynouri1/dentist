@@ -17,10 +17,13 @@ public interface IPatientRepository
 
     Task AddConsultationAsync(Consultation consultation, CancellationToken ct = default);
     Task AddDocumentAsync(PatientDocument document, CancellationToken ct = default);
+    Task<PatientDocument?> GetDocumentAsync(Guid documentId, CancellationToken ct = default);
+    Task DeleteDocumentAsync(Guid documentId, CancellationToken ct = default);
 
     Task AddImageAsync(MedicalImage image, CancellationToken ct = default);
     Task<MedicalImage?> GetImageAsync(Guid imageId, CancellationToken ct = default);
     Task UpdateImageAsync(MedicalImage image, CancellationToken ct = default);
+    Task DeleteImageAsync(Guid imageId, CancellationToken ct = default);
 
     Task AddAnnotationAsync(ImageAnnotation annotation, CancellationToken ct = default);
     Task DeleteAnnotationAsync(Guid annotationId, CancellationToken ct = default);

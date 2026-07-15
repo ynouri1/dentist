@@ -190,6 +190,28 @@ public partial class MainViewModel : ViewModelBase
     public ImageViewerViewModel? CreateViewerViewModel()
         => SelectedImage is { } image ? new ImageViewerViewModel(image, _imaging) : null;
 
+    /// <summary>Suppression confirmée par la vue (dialogue) au préalable.</summary>
+    public async Task DeleteSelectedImageAsync()
+    {
+        if (SelectedImage is not { } image || Form?.Id is not { } patientId)
+            return;
+
+        await _imaging.DeleteImageAsync(image.Id);
+        StatusMessage = L.F("StatusImageDeleted", image.FileName);
+        await LoadRecordAsync(patientId);
+    }
+
+    /// <summary>Suppression confirmée par la vue (dialogue) au préalable.</summary>
+    public async Task DeleteSelectedDocumentAsync()
+    {
+        if (SelectedDocument is not { } document || Form?.Id is not { } patientId)
+            return;
+
+        await _documents.DeleteAsync(document.Id);
+        StatusMessage = L.F("StatusDocumentDeleted", document.FileName);
+        await LoadRecordAsync(patientId);
+    }
+
     /// <summary>Appelé par la vue après le sélecteur de fichiers (onglet Imagerie).</summary>
     public async Task ImportImageAsync(Stream content, string fileName)
     {

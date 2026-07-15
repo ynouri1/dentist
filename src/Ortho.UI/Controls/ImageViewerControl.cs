@@ -413,8 +413,9 @@ public class ImageViewerControl : Control
         private static SKColorFilter CreateColorFilter(double brightness, double contrast)
         {
             // Contraste centré sur le gris moyen, luminosité en décalage pur.
+            // La colonne de translation de la matrice Skia est normalisée (1.0 = pleine échelle).
             var factor = (float)Math.Clamp(1 + contrast, 0, 2);
-            var offset = (float)(brightness * 255 + 127.5 * (1 - factor));
+            var offset = (float)(brightness + 0.5 * (1 - factor));
             return SKColorFilter.CreateColorMatrix(
             [
                 factor, 0, 0, 0, offset,

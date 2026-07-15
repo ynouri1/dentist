@@ -66,6 +66,25 @@ public class PatientRepository(IDbContextFactory<OrthoDbContext> contextFactory)
         await db.SaveChangesAsync(ct);
     }
 
+    public async Task<PatientDocument?> GetDocumentAsync(Guid documentId, CancellationToken ct = default)
+    {
+        await using var db = await contextFactory.CreateDbContextAsync(ct);
+        return await db.Documents.AsNoTracking().FirstOrDefaultAsync(d => d.Id == documentId, ct);
+    }
+
+    public async Task DeleteDocumentAsync(Guid documentId, CancellationToken ct = default)
+    {
+        await using var db = await contextFactory.CreateDbContextAsync(ct);
+        await db.Documents.Where(d => d.Id == documentId).ExecuteDeleteAsync(ct);
+    }
+
+    public async Task DeleteImageAsync(Guid imageId, CancellationToken ct = default)
+    {
+        await using var db = await contextFactory.CreateDbContextAsync(ct);
+        // Les annotations suivent par cascade définie au schéma.
+        await db.Images.Where(i => i.Id == imageId).ExecuteDeleteAsync(ct);
+    }
+
     public async Task AddImageAsync(MedicalImage image, CancellationToken ct = default)
     {
         await using var db = await contextFactory.CreateDbContextAsync(ct);

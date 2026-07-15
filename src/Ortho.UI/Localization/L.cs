@@ -93,4 +93,6 @@ public static class L
     public static string DeleteLast => Get(nameof(DeleteLast));
     public static string BrightnessLabel => Get(nameof(BrightnessLabel));
     public static string ContrastLabel => Get(nameof(ContrastLabel));
+    public static string DeleteImage => Get(nameof(DeleteImage));
+    public static string DeleteDocument => Get(nameof(DeleteDocument));
 }

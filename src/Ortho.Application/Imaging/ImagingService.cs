@@ -58,6 +58,20 @@ public class ImagingService(
     public Task<MedicalImage?> GetImageAsync(Guid imageId, CancellationToken ct = default)
         => patients.GetImageAsync(imageId, ct);
 
+    /// <summary>Supprime l'image, ses annotations (cascade) et ses fichiers chiffrés.</summary>
+    public async Task DeleteImageAsync(Guid imageId, CancellationToken ct = default)
+    {
+        var image = await patients.GetImageAsync(imageId, ct)
+            ?? throw new InvalidOperationException($"Image introuvable : {imageId}");
+
+        await patients.DeleteImageAsync(imageId, ct);
+        await store.DeleteAsync(image.StorageKeyOriginal, ct);
+        await store.DeleteAsync(image.StorageKeyDisplay, ct);
+
+        await audit.RecordAsync("image.delete", nameof(MedicalImage), imageId.ToString(),
+            $"{image.FileName} patient {image.PatientId}", ct);
+    }
+
     /// <summary>Calibration par règle étalon : une longueur connue mesurée en pixels sur l'image.</summary>
     public async Task<MedicalImage> CalibrateManuallyAsync(
         Guid imageId, double knownLengthMm, double measuredLengthPx, CancellationToken ct = default)

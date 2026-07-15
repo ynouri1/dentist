@@ -129,6 +129,8 @@
                             <Button Content="{x:Static loc:L.ImportImages}" Click="OnImportImagesClick" />
                             <Button Content="{x:Static loc:L.OpenViewer}" Click="OnOpenViewerClick"
                                     IsEnabled="{Binding SelectedImage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            <Button Content="{x:Static loc:L.DeleteImage}" Click="OnDeleteImageClick"
+                                    IsEnabled="{Binding SelectedImage, Converter={x:Static ObjectConverters.IsNotNull}}" />
                             <TextBlock Text="{Binding SelectedImageCalibration}"
                                        VerticalAlignment="Center" Opacity="0.8" />
                         </StackPanel>
@@ -190,6 +192,8 @@
                                 <ComboBoxItem Content="{x:Static loc:L.CategoryExam}" />
                             </ComboBox>
                             <Button Content="{x:Static loc:L.ImportFiles}" Click="OnImportClick" />
+                            <Button Content="{x:Static loc:L.DeleteDocument}" Click="OnDeleteDocumentClick"
+                                    IsEnabled="{Binding SelectedDocument, Converter={x:Static ObjectConverters.IsNotNull}}" />
                         </StackPanel>
 
                         <ListBox Grid.Row="1" Grid.Column="0" Margin="0,8,0,0"

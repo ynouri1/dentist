@@ -42,6 +42,15 @@ public class PatientServiceTests
             return Task.CompletedTask;
         }
 
+        public Task<PatientDocument?> GetDocumentAsync(Guid documentId, CancellationToken ct = default)
+            => Task.FromResult(Documents.FirstOrDefault(d => d.Id == documentId));
+
+        public Task DeleteDocumentAsync(Guid documentId, CancellationToken ct = default)
+        {
+            Documents.RemoveAll(d => d.Id == documentId);
+            return Task.CompletedTask;
+        }
+
         public List<MedicalImage> Images { get; } = [];
 
         public Task AddImageAsync(MedicalImage image, CancellationToken ct = default)
@@ -54,6 +63,12 @@ public class PatientServiceTests
             => Task.FromResult(Images.FirstOrDefault(i => i.Id == imageId));
 
         public Task UpdateImageAsync(MedicalImage image, CancellationToken ct = default) => Task.CompletedTask;
+
+        public Task DeleteImageAsync(Guid imageId, CancellationToken ct = default)
+        {
+            Images.RemoveAll(i => i.Id == imageId);
+            return Task.CompletedTask;
+        }
 
         public List<ImageAnnotation> Annotations { get; } = [];
 

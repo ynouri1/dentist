@@ -194,6 +194,33 @@ public class ImagingTests : IDisposable
         Assert.Equal(1, db.AuditEntries.Count(a => a.Action == "image.annotation.delete"));
     }
 
+    [Fact]
+    public async Task Deleting_image_removes_row_annotations_and_encrypted_files()
+    {
+        await using var provider = BuildProvider();
+        var patients = provider.GetRequiredService<PatientService>();
+        var imaging = provider.GetRequiredService<ImagingService>();
+        var store = provider.GetRequiredService<Ortho.Application.Abstractions.IObjectStore>();
+
+        var patient = await patients.CreateAsync(new PatientDraft { FirstName = "Ines", LastName = "Riahi" });
+        var image = await imaging.ImportAsync(patient.Id, new MemoryStream(CreateJpeg(30, 30)), "a-supprimer.jpg");
+        await imaging.AddAnnotationAsync(image.Id, AnnotationType.Distance,
+            [new ImagePoint(0, 0), new ImagePoint(10, 10)]);
+        Assert.True(await store.ExistsAsync(image.StorageKeyDisplay));
+
+        await imaging.DeleteImageAsync(image.Id);
+
+        Assert.Null(await imaging.GetImageAsync(image.Id));
+        Assert.False(await store.ExistsAsync(image.StorageKeyOriginal));
+        Assert.False(await store.ExistsAsync(image.StorageKeyDisplay));
+
+        await using var db = await provider
+            .GetRequiredService<IDbContextFactory<OrthoDbContext>>()
+            .CreateDbContextAsync();
+        Assert.Empty(db.Annotations.Where(a => a.MedicalImageId == image.Id)); // cascade
+        Assert.Single(db.AuditEntries.Where(a => a.Action == "image.delete"));
+    }
+
     /// <summary>
     /// Harnais du corpus réel (risque R1) : déposez des DICOM anonymisés de
     /// céphalostats tunisiens dans DicomCorpus/ et ce test les décode tous.

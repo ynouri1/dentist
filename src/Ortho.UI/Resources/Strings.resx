@@ -101,4 +101,13 @@
   <data name="BrightnessLabel" xml:space="preserve"><value>Luminosité</value></data>
   <data name="ContrastLabel" xml:space="preserve"><value>Contraste</value></data>
   <data name="MeasuresInPixels" xml:space="preserve"><value>Non calibrée — mesures en pixels</value></data>
+
+  <data name="DeleteImage" xml:space="preserve"><value>Supprimer l'image</value></data>
+  <data name="DeleteDocument" xml:space="preserve"><value>Supprimer le document</value></data>
+  <data name="ConfirmDeleteTitle" xml:space="preserve"><value>Confirmation</value></data>
+  <data name="ConfirmDeleteMessage" xml:space="preserve"><value>Supprimer définitivement « {0} » ? Les mesures et annotations associées seront également supprimées.</value></data>
+  <data name="ConfirmDelete" xml:space="preserve"><value>Supprimer</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Annuler</value></data>
+  <data name="StatusImageDeleted" xml:space="preserve"><value>Image supprimée : {0}</value></data>
+  <data name="StatusDocumentDeleted" xml:space="preserve"><value>Document supprimé : {0}</value></data>
 </root>

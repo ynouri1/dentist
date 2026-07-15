@@ -54,6 +54,24 @@ public partial class MainWindow : Window
         _ = viewerViewModel.LoadAsync();
     }
 
+    private async void OnDeleteImageClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not MainViewModel viewModel || viewModel.SelectedImage is not { } image)
+            return;
+
+        if (await ConfirmDialog.ShowAsync(this, L.F("ConfirmDeleteMessage", image.FileName)))
+            await viewModel.DeleteSelectedImageAsync();
+    }
+
+    private async void OnDeleteDocumentClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not MainViewModel viewModel || viewModel.SelectedDocument is not { } document)
+            return;
+
+        if (await ConfirmDialog.ShowAsync(this, L.F("ConfirmDeleteMessage", document.FileName)))
+            await viewModel.DeleteSelectedDocumentAsync();
+    }
+
     private async void OnImportImagesClick(object? sender, RoutedEventArgs e)
     {
         if (DataContext is not MainViewModel viewModel)

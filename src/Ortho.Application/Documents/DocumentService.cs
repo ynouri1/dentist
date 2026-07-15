@@ -46,6 +46,19 @@ public class DocumentService(IPatientRepository patients, IObjectStore store, IA
     public Task<Stream> OpenAsync(PatientDocument document, CancellationToken ct = default)
         => store.OpenReadAsync(document.StorageKey, ct);
 
+    /// <summary>Supprime le document et son fichier chiffré.</summary>
+    public async Task DeleteAsync(Guid documentId, CancellationToken ct = default)
+    {
+        var document = await patients.GetDocumentAsync(documentId, ct)
+            ?? throw new InvalidOperationException($"Document introuvable : {documentId}");
+
+        await patients.DeleteDocumentAsync(documentId, ct);
+        await store.DeleteAsync(document.StorageKey, ct);
+
+        await audit.RecordAsync("document.delete", nameof(PatientDocument), documentId.ToString(),
+            $"{document.FileName} patient {document.PatientId}", ct);
+    }
+
     public static bool IsImage(PatientDocument document)
         => document.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase);
 }
