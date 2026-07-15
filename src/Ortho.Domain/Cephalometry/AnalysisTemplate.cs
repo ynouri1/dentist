@@ -17,6 +17,12 @@ public enum MeasureKind
     Difference = 4,
     /// <summary>Complément à 180° de la somme d'autres mesures : 180 − Σ Operands (triangle de Tweed).</summary>
     Supplement = 5,
+    /// <summary>Distance d'un point à la perpendiculaire à (P3,P4) passant par P2 : landmarks [point, passage, l1, l2] (mm).</summary>
+    PerpendicularDistance = 6,
+    /// <summary>Rapport de longueurs |P1P2| / |P3P4| × 100 : landmarks [a, b, c, d] (%), indépendant de la calibration.</summary>
+    Ratio = 7,
+    /// <summary>Somme d'autres mesures : Σ Operands (polygone de Jarabak).</summary>
+    Sum = 8,
 }
 
 /// <summary>
@@ -31,7 +37,8 @@ public record MeasureDefinition(
     string Unit,
     double NormMean,
     double NormSd,
-    string[]? Operands = null);
+    string[]? Operands = null,
+    bool Hidden = false);
 
 /// <summary>Analyse céphalométrique complète, versionnée pour la traçabilité.</summary>
 public record AnalysisTemplate(

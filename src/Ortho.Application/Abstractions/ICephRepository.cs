@@ -5,6 +5,7 @@ namespace Ortho.Application.Abstractions;
 public interface ICephRepository
 {
     Task<CephAnalysis?> GetByImageAndTemplateAsync(Guid imageId, string templateCode, CancellationToken ct = default);
+    Task<IReadOnlyList<CephAnalysis>> ListByImageAsync(Guid imageId, CancellationToken ct = default);
     Task<CephAnalysis?> GetAsync(Guid analysisId, CancellationToken ct = default);
     Task AddAsync(CephAnalysis analysis, CancellationToken ct = default);
 

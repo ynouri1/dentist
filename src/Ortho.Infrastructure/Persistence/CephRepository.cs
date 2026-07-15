@@ -16,6 +16,16 @@ public class CephRepository(IDbContextFactory<OrthoDbContext> contextFactory) : 
             .FirstOrDefaultAsync(a => a.MedicalImageId == imageId && a.TemplateCode == templateCode, ct);
     }
 
+    public async Task<IReadOnlyList<CephAnalysis>> ListByImageAsync(Guid imageId, CancellationToken ct = default)
+    {
+        await using var db = await contextFactory.CreateDbContextAsync(ct);
+        return await db.CephAnalyses
+            .Include(a => a.Landmarks)
+            .AsNoTracking()
+            .Where(a => a.MedicalImageId == imageId)
+            .ToListAsync(ct);
+    }
+
     public async Task<CephAnalysis?> GetAsync(Guid analysisId, CancellationToken ct = default)
     {
         await using var db = await contextFactory.CreateDbContextAsync(ct);

@@ -65,6 +65,15 @@ public partial class MainWindow : Window
         _ = cephViewModel.LoadAsync();
     }
 
+    private void OnSuperpositionClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not MainViewModel viewModel)
+            return;
+
+        var window = new SuperpositionWindow(viewModel.CreateSuperpositionViewModel());
+        window.Show(this);
+    }
+
     private async void OnDeleteImageClick(object? sender, RoutedEventArgs e)
     {
         if (DataContext is not MainViewModel viewModel || viewModel.SelectedImage is not { } image)

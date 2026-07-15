@@ -17,6 +17,8 @@ public static class LandmarkCatalog
             new("Go", "Gonion"),
             new("Po", "Porion"),
             new("Or", "Orbitale"),
+            new("Ar", "Articulare"),
+            new("Co", "Condylion"),
             new("ANS", "Épine nasale antérieure"),
             new("PNS", "Épine nasale postérieure"),
             new("U1E", "Incisive supérieure — bord libre"),

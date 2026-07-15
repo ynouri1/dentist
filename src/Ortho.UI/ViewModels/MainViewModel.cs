@@ -197,6 +197,10 @@ public partial class MainViewModel : ViewModelBase
     public CephAnalysisViewModel? CreateCephViewModel()
         => SelectedImage is { } image ? new CephAnalysisViewModel(image, _ceph, _imaging) : null;
 
+    /// <summary>Superposition T0/T1 sur les images du patient courant.</summary>
+    public SuperpositionViewModel CreateSuperpositionViewModel()
+        => new([.. Images], _ceph, _imaging);
+
     /// <summary>Suppression confirmée par la vue (dialogue) au préalable.</summary>
     public async Task DeleteSelectedImageAsync()
     {

@@ -191,6 +191,8 @@ public partial class CephAnalysisViewModel(MedicalImage image, CephalometryServi
         Results.Clear();
         foreach (var result in computed)
         {
+            if (result.Hidden)
+                continue;
             var value = result.Value is { } v
                 ? $"{v.ToString("F1", CultureInfo.CurrentCulture)} {result.Unit}"
                 : "—";
@@ -221,34 +223,7 @@ public partial class CephAnalysisViewModel(MedicalImage image, CephalometryServi
 
     /// <summary>Segments du tracé : les lignes de chaque mesure dont les points sont placés.</summary>
     public IReadOnlyList<(ImagePoint, ImagePoint)> GetTraceLines()
-    {
-        var lines = new List<(ImagePoint, ImagePoint)>();
-        foreach (var measure in SelectedTemplate.Measures)
-        {
-            var codes = measure.Landmarks;
-            if (codes.Length == 0 || codes.Any(c => !_points.ContainsKey(c)))
-                continue;
-
-            switch (measure.Kind)
-            {
-                case MeasureKind.AngleAtVertex:
-                    lines.Add((_points[codes[1]], _points[codes[0]]));
-                    lines.Add((_points[codes[1]], _points[codes[2]]));
-                    break;
-                case MeasureKind.AngleBetweenLines:
-                    lines.Add((_points[codes[0]], _points[codes[1]]));
-                    lines.Add((_points[codes[2]], _points[codes[3]]));
-                    break;
-                case MeasureKind.Distance:
-                    lines.Add((_points[codes[0]], _points[codes[1]]));
-                    break;
-                case MeasureKind.PointToLineDistance:
-                    lines.Add((_points[codes[1]], _points[codes[2]]));
-                    break;
-            }
-        }
-        return lines;
-    }
+        => CephTracing.BuildSegments(SelectedTemplate, _points);
 
     public bool HasCurrentLandmark => CurrentLandmark is not null;
 }

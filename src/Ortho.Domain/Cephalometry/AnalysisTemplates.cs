@@ -41,7 +41,75 @@ public static class AnalysisTemplates
                 [], "°", 65, 5, Operands: ["FMA", "IMPA"]),
         ]);
 
-    public static readonly IReadOnlyList<AnalysisTemplate> All = [Steiner, Tweed];
+    /// <summary>Sous-ensemble MVP de Ricketts (l'analyse complète compte 30+ mesures).</summary>
+    public static readonly AnalysisTemplate Ricketts = new(
+        "ricketts", "Analyse de Ricketts", "1.0",
+        [
+            new("FacialDepth", "Profondeur faciale (FH / N-Pog)", MeasureKind.AngleBetweenLines,
+                ["Po", "Or", "N", "Pog"], "°", 87, 3),
+            new("MandPlane", "Plan mandibulaire / FH", MeasureKind.AngleBetweenLines,
+                ["Po", "Or", "Go", "Me"], "°", 26, 4),
+            new("ConvexityA", "Convexité du point A (A → N-Pog)", MeasureKind.PointToLineDistance,
+                ["A", "N", "Pog"], "mm", 2, 2),
+            new("L1-APog-mm", "Incisive inf. / A-Pog (distance)", MeasureKind.PointToLineDistance,
+                ["L1E", "A", "Pog"], "mm", 1, 2.3),
+            new("L1-APog-angle", "Incisive inf. / A-Pog (angle)", MeasureKind.AngleBetweenLines,
+                ["L1A", "L1E", "A", "Pog"], "°", 22, 4),
+        ]);
+
+    public static readonly AnalysisTemplate McNamara = new(
+        "mcnamara", "Analyse de McNamara", "1.0",
+        [
+            new("Co-A", "Longueur maxillaire effective (Co–A)", MeasureKind.Distance,
+                ["Co", "A"], "mm", 99, 6),
+            new("Co-Gn", "Longueur mandibulaire effective (Co–Gn)", MeasureKind.Distance,
+                ["Co", "Gn"], "mm", 125, 8),
+            new("MaxMandDiff", "Différentiel maxillo-mandibulaire", MeasureKind.Difference,
+                [], "mm", 27, 4, Operands: ["Co-Gn", "Co-A"]),
+            new("ANS-Me", "Hauteur faciale antérieure inférieure", MeasureKind.Distance,
+                ["ANS", "Me"], "mm", 66, 5),
+            new("A-NPerp", "Point A / perpendiculaire de Nasion", MeasureKind.PerpendicularDistance,
+                ["A", "N", "Po", "Or"], "mm", 1, 2),
+            new("Pog-NPerp", "Pogonion / perpendiculaire de Nasion", MeasureKind.PerpendicularDistance,
+                ["Pog", "N", "Po", "Or"], "mm", 0, 4),
+        ]);
+
+    public static readonly AnalysisTemplate Downs = new(
+        "downs", "Analyse de Downs", "1.0",
+        [
+            new("FacialAngle", "Angle facial (FH / N-Pog)", MeasureKind.AngleBetweenLines,
+                ["Po", "Or", "N", "Pog"], "°", 87.8, 3.6),
+            new("NAPog", "N-A-Pog (angle interne)", MeasureKind.AngleAtVertex,
+                ["N", "A", "Pog"], "°", 180, 5.1, Hidden: true),
+            new("Convexity", "Angle de convexité", MeasureKind.Supplement,
+                [], "°", 0, 5.1, Operands: ["NAPog"]),
+            new("ABPlane", "Plan A-B / N-Pog", MeasureKind.AngleBetweenLines,
+                ["A", "B", "N", "Pog"], "°", 4.6, 3.7),
+            new("FMA", "FMA (Francfort / plan mandibulaire)", MeasureKind.AngleBetweenLines,
+                ["Po", "Or", "Go", "Me"], "°", 21.9, 3.2),
+            new("YAxis", "Axe Y (S-Gn / FH)", MeasureKind.AngleBetweenLines,
+                ["S", "Gn", "Po", "Or"], "°", 59.4, 3.8),
+            new("Interincisal", "Angle interincisif", MeasureKind.AngleBetweenLines,
+                ["U1E", "U1A", "L1E", "L1A"], "°", 135.4, 5.8),
+        ]);
+
+    public static readonly AnalysisTemplate Jarabak = new(
+        "jarabak", "Analyse de Jarabak", "1.0",
+        [
+            new("Saddle", "Angle de la selle (N-S-Ar)", MeasureKind.AngleAtVertex,
+                ["N", "S", "Ar"], "°", 123, 5),
+            new("Articular", "Angle articulaire (S-Ar-Go)", MeasureKind.AngleAtVertex,
+                ["S", "Ar", "Go"], "°", 143, 6),
+            new("Gonial", "Angle goniaque (Ar-Go-Me)", MeasureKind.AngleAtVertex,
+                ["Ar", "Go", "Me"], "°", 130, 7),
+            new("SumAngles", "Somme des angles du polygone", MeasureKind.Sum,
+                [], "°", 396, 6, Operands: ["Saddle", "Articular", "Gonial"]),
+            new("FacialHeightRatio", "Rapport hauteurs faciales S-Go / N-Me", MeasureKind.Ratio,
+                ["S", "Go", "N", "Me"], "%", 64, 2),
+        ]);
+
+    public static readonly IReadOnlyList<AnalysisTemplate> All =
+        [Steiner, Ricketts, Tweed, McNamara, Downs, Jarabak];
 
     public static AnalysisTemplate Get(string code)
         => All.FirstOrDefault(t => t.Code == code)

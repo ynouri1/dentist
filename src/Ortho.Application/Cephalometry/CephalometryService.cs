@@ -25,7 +25,8 @@ public record MeasureResult(
     double? Value,
     double NormMean,
     double NormSd,
-    MeasureStatus Status)
+    MeasureStatus Status,
+    bool Hidden = false)
 {
     /// <summary>Écart à la norme en écarts-types, null si non calculable.</summary>
     public double? DeviationSd => Value is { } v && NormSd > 0 ? (v - NormMean) / NormSd : null;
@@ -52,8 +53,47 @@ public class CephalometryService(ICephRepository analyses, IAuditTrail audit)
         await analyses.AddAsync(analysis, ct);
         await audit.RecordAsync("ceph.create", nameof(CephAnalysis), analysis.Id.ToString(),
             $"{template.Code} v{template.Version} image {imageId}", ct);
+
+        // Bibliothèque partagée : les landmarks déjà placés sur cette image dans
+        // d'autres analyses sont réutilisés (placer une fois, réutiliser partout).
+        var inherited = await CollectExistingLandmarksAsync(imageId, template, analysis.Id, ct);
+        foreach (var landmark in inherited)
+        {
+            await analyses.UpsertLandmarkAsync(landmark, ct);
+            analysis.Landmarks.Add(landmark);
+        }
+
         return analysis;
     }
+
+    private async Task<List<CephLandmark>> CollectExistingLandmarksAsync(
+        Guid imageId, AnalysisTemplate template, Guid newAnalysisId, CancellationToken ct)
+    {
+        var others = await analyses.ListByImageAsync(imageId, ct);
+        var wanted = template.RequiredLandmarks.ToHashSet();
+
+        return others
+            .Where(a => a.Id != newAnalysisId)
+            .SelectMany(a => a.Landmarks)
+            .Where(l => wanted.Contains(l.Code))
+            .GroupBy(l => l.Code)
+            .Select(g => g.OrderByDescending(l => l.PlacedAtUtc).First())
+            .Select(l => new CephLandmark
+            {
+                AnalysisId = newAnalysisId,
+                Code = l.Code,
+                X = l.X,
+                Y = l.Y,
+                Source = l.Source,
+                Confidence = l.Confidence,
+                PlacedAtUtc = l.PlacedAtUtc,
+            })
+            .ToList();
+    }
+
+    /// <summary>Analyse existante sans création implicite (superposition, rapports).</summary>
+    public Task<CephAnalysis?> FindAsync(Guid imageId, string templateCode, CancellationToken ct = default)
+        => analyses.GetByImageAndTemplateAsync(imageId, templateCode, ct);
 
     public Task<CephAnalysis?> GetAsync(Guid analysisId, CancellationToken ct = default)
         => analyses.GetAsync(analysisId, ct);
@@ -123,6 +163,17 @@ public class CephalometryService(ICephRepository analyses, IAuditTrail audit)
                 MeasureKind.Supplement when Operands(measure, values) is { } o
                     => 180 - o.Sum(),
 
+                MeasureKind.Sum when Operands(measure, values) is { } o
+                    => o.Sum(),
+
+                MeasureKind.PerpendicularDistance when calibrated && TryGet(measure.Landmarks, landmarks, out var p)
+                    => PerpendicularDistance(p[0], p[1], p[2], p[3], sx, sy),
+
+                // Un rapport de longueurs est sans unité : calculable même non calibré
+                // (pixels carrés supposés).
+                MeasureKind.Ratio when TryGet(measure.Landmarks, landmarks, out var p)
+                    => Ratio(p[0], p[1], p[2], p[3], sx, sy),
+
                 _ => null,
             };
 
@@ -131,7 +182,7 @@ public class CephalometryService(ICephRepository analyses, IAuditTrail audit)
 
             results.Add(new MeasureResult(
                 measure.Code, measure.Name, measure.Unit, value,
-                measure.NormMean, measure.NormSd, StatusOf(value, measure)));
+                measure.NormMean, measure.NormSd, StatusOf(value, measure), measure.Hidden));
         }
 
         return results;
@@ -186,6 +237,27 @@ public class CephalometryService(ICephRepository analyses, IAuditTrail audit)
         if (length == 0)
             return 0;
         return Math.Abs((bx - ax) * (ay - py) - (ax - px) * (by - ay)) / length;
+    }
+
+    /// <summary>Distance du point à la perpendiculaire à (l1,l2) passant par <paramref name="through"/>.</summary>
+    private static double PerpendicularDistance(
+        ImagePoint point, ImagePoint through, ImagePoint l1, ImagePoint l2, double sx, double sy)
+    {
+        var (px, py) = (point.X * sx, point.Y * sy);
+        var (tx, ty) = (through.X * sx, through.Y * sy);
+        // Direction de la perpendiculaire à (l1,l2).
+        var (dx, dy) = (-(l2.Y - l1.Y) * sy, (l2.X - l1.X) * sx);
+        var norm = Math.Sqrt(dx * dx + dy * dy);
+        if (norm == 0)
+            return 0;
+        return Math.Abs(dx * (py - ty) - dy * (px - tx)) / norm;
+    }
+
+    private static double Ratio(
+        ImagePoint a, ImagePoint b, ImagePoint c, ImagePoint d, double sx, double sy)
+    {
+        var denominator = GeometryCalculator.Distance(c, d, sx, sy);
+        return denominator == 0 ? 0 : GeometryCalculator.Distance(a, b, sx, sy) / denominator * 100;
     }
 
     private static MeasureStatus StatusOf(double? value, MeasureDefinition measure)

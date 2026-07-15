@@ -103,4 +103,7 @@ public static class L
     public static string UndoPoint => Get(nameof(UndoPoint));
     public static string RedoPoint => Get(nameof(RedoPoint));
     public static string ToolCalibrate => Get(nameof(ToolCalibrate));
+    public static string Superposition => Get(nameof(Superposition));
+    public static string ReferenceImageLabel => Get(nameof(ReferenceImageLabel));
+    public static string ComparedImageLabel => Get(nameof(ComparedImageLabel));
 }

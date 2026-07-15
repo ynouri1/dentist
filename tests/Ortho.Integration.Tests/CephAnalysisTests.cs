@@ -82,6 +82,30 @@ public class CephAnalysisTests : IDisposable
     }
 
     [Fact]
+    public async Task Landmarks_are_shared_across_analyses_of_the_same_image()
+    {
+        await using var provider = BuildProvider();
+        var ceph = provider.GetRequiredService<CephalometryService>();
+        var image = await ImportImageAsync(provider);
+
+        // Steiner et Tweed partagent Go, L1E et L1A : placés une fois sur Steiner…
+        var steiner = await ceph.GetOrCreateAsync(image.Id, "steiner");
+        await ceph.SetLandmarkAsync(steiner.Id, "Go", new ImagePoint(12, 34));
+        await ceph.SetLandmarkAsync(steiner.Id, "L1E", new ImagePoint(56, 78));
+
+        // …ils sont prérenseignés à la création de Tweed.
+        var tweed = await ceph.GetOrCreateAsync(image.Id, "tweed");
+        var reloaded = await ceph.GetAsync(tweed.Id);
+
+        var go = reloaded!.Landmarks.Single(l => l.Code == "Go");
+        Assert.Equal(12, go.X);
+        Assert.Equal(34, go.Y);
+        Assert.Single(reloaded.Landmarks, l => l.Code == "L1E");
+        // Po (propre à Tweed) reste à placer.
+        Assert.DoesNotContain(reloaded.Landmarks, l => l.Code == "Po");
+    }
+
+    [Fact]
     public async Task Unknown_landmark_code_is_rejected()
     {
         await using var provider = BuildProvider();

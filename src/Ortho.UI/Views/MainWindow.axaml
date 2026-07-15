@@ -131,6 +131,7 @@
                                     IsEnabled="{Binding SelectedImage, Converter={x:Static ObjectConverters.IsNotNull}}" />
                             <Button Content="{x:Static loc:L.Cephalometry}" Click="OnCephalometryClick"
                                     IsEnabled="{Binding SelectedImage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            <Button Content="{x:Static loc:L.Superposition}" Click="OnSuperpositionClick" />
                             <Button Content="{x:Static loc:L.DeleteImage}" Click="OnDeleteImageClick"
                                     IsEnabled="{Binding SelectedImage, Converter={x:Static ObjectConverters.IsNotNull}}" />
                             <TextBlock Text="{Binding SelectedImageCalibration}"

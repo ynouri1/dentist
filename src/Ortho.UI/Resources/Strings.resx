@@ -124,4 +124,12 @@
   <data name="CalibrationPromptTitle" xml:space="preserve"><value>Règle étalon</value></data>
   <data name="CalibrationPromptMessage" xml:space="preserve"><value>Longueur réelle du segment tracé, en millimètres :</value></data>
   <data name="Ok" xml:space="preserve"><value>Valider</value></data>
+
+  <data name="Superposition" xml:space="preserve"><value>Superposition T0/T1</value></data>
+  <data name="SuperpositionTitle" xml:space="preserve"><value>Superposition des tracés</value></data>
+  <data name="ReferenceImageLabel" xml:space="preserve"><value>T0 (référence)</value></data>
+  <data name="ComparedImageLabel" xml:space="preserve"><value>T1</value></data>
+  <data name="SuperpositionSelectImages" xml:space="preserve"><value>Choisissez les deux images à comparer.</value></data>
+  <data name="SuperpositionMissing" xml:space="preserve"><value>Analyse « {0} » absente ou points S/N non placés sur l'une des deux images.</value></data>
+  <data name="SuperpositionHint" xml:space="preserve"><value>Tracés recalés sur S–N : T0 en cyan, T1 en orange.</value></data>
 </root>

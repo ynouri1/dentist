@@ -1,0 +1,50 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Ortho.UI.ViewModels"
+        xmlns:controls="using:Ortho.UI.Controls"
+        xmlns:loc="using:Ortho.UI.Localization"
+        x:Class="Ortho.UI.Views.SuperpositionWindow"
+        x:DataType="vm:SuperpositionViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="{Binding Title}"
+        Width="1200" Height="800">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="8">
+            <TextBlock Text="{x:Static loc:L.TemplateLabel}" VerticalAlignment="Center" />
+            <ComboBox ItemsSource="{Binding Templates}" SelectedItem="{Binding SelectedTemplate}" MinWidth="180">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <TextBlock Text="{x:Static loc:L.ReferenceImageLabel}" VerticalAlignment="Center" Margin="12,0,0,0" />
+            <ComboBox ItemsSource="{Binding Images}" SelectedItem="{Binding ReferenceImage}" MinWidth="220">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding FileName}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <TextBlock Text="{x:Static loc:L.ComparedImageLabel}" VerticalAlignment="Center" Margin="12,0,0,0" />
+            <ComboBox ItemsSource="{Binding Images}" SelectedItem="{Binding ComparedImage}" MinWidth="220">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding FileName}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+
+        <controls:TracingOverlayControl x:Name="Overlay" Grid.Row="1" />
+
+        <Border Grid.Row="2" Padding="12,6"
+                Background="{DynamicResource SystemControlBackgroundListLowBrush}">
+            <TextBlock Text="{Binding StatusMessage}" FontSize="12" />
+        </Border>
+    </Grid>
+</Window>
