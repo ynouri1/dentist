@@ -41,6 +41,19 @@ public class PatientServiceTests
             Documents.Add(document);
             return Task.CompletedTask;
         }
+
+        public List<MedicalImage> Images { get; } = [];
+
+        public Task AddImageAsync(MedicalImage image, CancellationToken ct = default)
+        {
+            Images.Add(image);
+            return Task.CompletedTask;
+        }
+
+        public Task<MedicalImage?> GetImageAsync(Guid imageId, CancellationToken ct = default)
+            => Task.FromResult(Images.FirstOrDefault(i => i.Id == imageId));
+
+        public Task UpdateImageAsync(MedicalImage image, CancellationToken ct = default) => Task.CompletedTask;
     }
 
     private sealed class FakeAudit : IAuditTrail

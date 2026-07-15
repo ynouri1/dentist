@@ -11,6 +11,7 @@ public class OrthoDbContext(DbContextOptions<OrthoDbContext> options) : DbContex
     public DbSet<PatientDocument> Documents => Set<PatientDocument>();
     public DbSet<AuditEntry> AuditEntries => Set<AuditEntry>();
     public DbSet<AppUser> Users => Set<AppUser>();
+    public DbSet<MedicalImage> Images => Set<MedicalImage>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -31,6 +32,19 @@ public class OrthoDbContext(DbContextOptions<OrthoDbContext> options) : DbContex
                 .WithOne()
                 .HasForeignKey(d => d.PatientId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            patient.HasMany(p => p.Images)
+                .WithOne()
+                .HasForeignKey(i => i.PatientId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<MedicalImage>(image =>
+        {
+            image.Property(i => i.FileName).HasMaxLength(260);
+            image.Property(i => i.Modality).HasMaxLength(16);
+            image.Property(i => i.StorageKeyOriginal).HasMaxLength(512);
+            image.Property(i => i.StorageKeyDisplay).HasMaxLength(512);
         });
 
         modelBuilder.Entity<Consultation>().HasIndex(c => c.Date);

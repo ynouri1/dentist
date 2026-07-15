@@ -12,6 +12,7 @@ public class PatientRepository(IDbContextFactory<OrthoDbContext> contextFactory)
         return await db.Patients
             .Include(p => p.Consultations.OrderByDescending(c => c.Date))
             .Include(p => p.Documents)
+            .Include(p => p.Images.OrderByDescending(i => i.ImportedAtUtc))
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id == id, ct);
     }
@@ -62,6 +63,26 @@ public class PatientRepository(IDbContextFactory<OrthoDbContext> contextFactory)
     {
         await using var db = await contextFactory.CreateDbContextAsync(ct);
         db.Documents.Add(document);
+        await db.SaveChangesAsync(ct);
+    }
+
+    public async Task AddImageAsync(MedicalImage image, CancellationToken ct = default)
+    {
+        await using var db = await contextFactory.CreateDbContextAsync(ct);
+        db.Images.Add(image);
+        await db.SaveChangesAsync(ct);
+    }
+
+    public async Task<MedicalImage?> GetImageAsync(Guid imageId, CancellationToken ct = default)
+    {
+        await using var db = await contextFactory.CreateDbContextAsync(ct);
+        return await db.Images.AsNoTracking().FirstOrDefaultAsync(i => i.Id == imageId, ct);
+    }
+
+    public async Task UpdateImageAsync(MedicalImage image, CancellationToken ct = default)
+    {
+        await using var db = await contextFactory.CreateDbContextAsync(ct);
+        db.Images.Update(image);
         await db.SaveChangesAsync(ct);
     }
 

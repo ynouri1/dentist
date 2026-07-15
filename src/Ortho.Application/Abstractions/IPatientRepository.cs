@@ -17,4 +17,8 @@ public interface IPatientRepository
 
     Task AddConsultationAsync(Consultation consultation, CancellationToken ct = default);
     Task AddDocumentAsync(PatientDocument document, CancellationToken ct = default);
+
+    Task AddImageAsync(MedicalImage image, CancellationToken ct = default);
+    Task<MedicalImage?> GetImageAsync(Guid imageId, CancellationToken ct = default);
+    Task UpdateImageAsync(MedicalImage image, CancellationToken ct = default);
 }

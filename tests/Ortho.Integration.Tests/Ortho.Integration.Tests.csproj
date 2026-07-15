@@ -24,5 +24,10 @@
     <ProjectReference Include="..\..\src\Ortho.Infrastructure\Ortho.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Corpus DICOM réel (voir DicomCorpus/README.md) copié à côté des tests. -->
+    <None Include="DicomCorpus\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
 

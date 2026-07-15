@@ -71,4 +71,13 @@ public static class L
     public static string ImportFiles => Get(nameof(ImportFiles));
     public static string ImportDialogTitle => Get(nameof(ImportDialogTitle));
     public static string ImportFilterName => Get(nameof(ImportFilterName));
+
+    public static string TabImaging => Get(nameof(TabImaging));
+    public static string ImportImages => Get(nameof(ImportImages));
+    public static string ImagingDialogTitle => Get(nameof(ImagingDialogTitle));
+    public static string ImagingFilterName => Get(nameof(ImagingFilterName));
+    public static string CalibrationPanelTitle => Get(nameof(CalibrationPanelTitle));
+    public static string CalibrationKnownMm => Get(nameof(CalibrationKnownMm));
+    public static string CalibrationMeasuredPx => Get(nameof(CalibrationMeasuredPx));
+    public static string Calibrate => Get(nameof(Calibrate));
 }

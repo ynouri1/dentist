@@ -122,6 +122,59 @@
                     </Grid>
                 </TabItem>
 
+                <TabItem Header="{x:Static loc:L.TabImaging}" IsEnabled="{Binding HasSavedPatient}">
+                    <Grid ColumnDefinitions="*,12,*" RowDefinitions="Auto,*" Margin="0,8,0,0">
+                        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+                                    Orientation="Horizontal" Spacing="8">
+                            <Button Content="{x:Static loc:L.ImportImages}" Click="OnImportImagesClick" />
+                            <TextBlock Text="{Binding SelectedImageCalibration}"
+                                       VerticalAlignment="Center" Opacity="0.8" />
+                        </StackPanel>
+
+                        <ListBox Grid.Row="1" Grid.Column="0" Margin="0,8,0,0"
+                                 ItemsSource="{Binding Images}"
+                                 SelectedItem="{Binding SelectedImage}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="4">
+                                        <TextBlock Text="{Binding FileName}" FontWeight="SemiBold" />
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <TextBlock Text="{Binding Modality}" FontSize="12" Opacity="0.6" />
+                                            <TextBlock Text="{Binding Width}" FontSize="12" Opacity="0.6" />
+                                            <TextBlock Text="×" FontSize="12" Opacity="0.6" />
+                                            <TextBlock Text="{Binding Height}" FontSize="12" Opacity="0.6" />
+                                            <TextBlock Text="{Binding ImportedAtUtc, StringFormat={}{0:dd/MM/yyyy}}"
+                                                       FontSize="12" Opacity="0.6" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                        <Grid Grid.Row="1" Grid.Column="2" Margin="0,8,0,0" RowDefinitions="*,Auto">
+                            <Border Grid.Row="0" CornerRadius="4"
+                                    Background="{DynamicResource SystemControlBackgroundListLowBrush}">
+                                <Image Source="{Binding ImagePreview}" Stretch="Uniform" Margin="8" />
+                            </Border>
+
+                            <Border Grid.Row="1" Padding="8" Margin="0,8,0,0" CornerRadius="4"
+                                    Background="{DynamicResource SystemControlBackgroundListLowBrush}"
+                                    IsVisible="{Binding SelectedImage, Converter={x:Static ObjectConverters.IsNotNull}}">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="{x:Static loc:L.CalibrationPanelTitle}" FontWeight="SemiBold" />
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBox Text="{Binding CalibrationKnownMm}"
+                                                 PlaceholderText="{x:Static loc:L.CalibrationKnownMm}" Width="170" />
+                                        <TextBox Text="{Binding CalibrationMeasuredPx}"
+                                                 PlaceholderText="{x:Static loc:L.CalibrationMeasuredPx}" Width="190" />
+                                        <Button Content="{x:Static loc:L.Calibrate}" Command="{Binding CalibrateCommand}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+
                 <TabItem Header="{x:Static loc:L.TabDocuments}" IsEnabled="{Binding HasSavedPatient}">
                     <Grid ColumnDefinitions="*,12,*" RowDefinitions="Auto,*" Margin="0,8,0,0">
                         <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"

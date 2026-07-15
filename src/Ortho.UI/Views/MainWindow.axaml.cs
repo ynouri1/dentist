@@ -43,6 +43,32 @@ public partial class MainWindow : Window
         base.OnClosed(e);
     }
 
+    private async void OnImportImagesClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not MainViewModel viewModel)
+            return;
+
+        var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = L.ImagingDialogTitle,
+            AllowMultiple = true,
+            FileTypeFilter =
+            [
+                new FilePickerFileType(L.ImagingFilterName)
+                {
+                    Patterns = ["*.dcm", "*.dicom", "*.jpg", "*.jpeg", "*.png", "*.tif", "*.tiff"],
+                },
+                FilePickerFileTypes.All,
+            ],
+        });
+
+        foreach (var file in files)
+        {
+            await using var stream = await file.OpenReadAsync();
+            await viewModel.ImportImageAsync(stream, file.Name);
+        }
+    }
+
     private async void OnImportClick(object? sender, RoutedEventArgs e)
     {
         if (DataContext is not MainViewModel viewModel)

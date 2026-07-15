@@ -69,4 +69,20 @@
 
   <data name="FormTitleNew" xml:space="preserve"><value>Nouveau patient</value></data>
   <data name="FormTitleRecord" xml:space="preserve"><value>Dossier {0}</value></data>
+
+  <data name="TabImaging" xml:space="preserve"><value>Imagerie</value></data>
+  <data name="ImportImages" xml:space="preserve"><value>Importer des images…</value></data>
+  <data name="ImagingDialogTitle" xml:space="preserve"><value>Importer des images médicales</value></data>
+  <data name="ImagingFilterName" xml:space="preserve"><value>Images médicales (DICOM, JPG, PNG, TIFF)</value></data>
+  <data name="CalibrationPanelTitle" xml:space="preserve"><value>Calibration</value></data>
+  <data name="CalibrationKnownMm" xml:space="preserve"><value>Longueur connue (mm)</value></data>
+  <data name="CalibrationMeasuredPx" xml:space="preserve"><value>Longueur mesurée (pixels)</value></data>
+  <data name="Calibrate" xml:space="preserve"><value>Calibrer</value></data>
+  <data name="CalibrationNone" xml:space="preserve"><value>Non calibrée — mesures en mm impossibles</value></data>
+  <data name="CalibrationDicom" xml:space="preserve"><value>{0} mm/px (DICOM)</value></data>
+  <data name="CalibrationManual" xml:space="preserve"><value>{0} mm/px (manuelle)</value></data>
+  <data name="StatusImageImported" xml:space="preserve"><value>Image importée : {0}</value></data>
+  <data name="StatusImageImportFailed" xml:space="preserve"><value>Import impossible : {0} Repli : exportez l'image en JPG depuis l'appareil et réimportez-la.</value></data>
+  <data name="StatusCalibrated" xml:space="preserve"><value>Image calibrée : {0} mm/pixel.</value></data>
+  <data name="CalibrationInvalidInput" xml:space="preserve"><value>Valeurs de calibration invalides : saisissez des nombres positifs.</value></data>
 </root>

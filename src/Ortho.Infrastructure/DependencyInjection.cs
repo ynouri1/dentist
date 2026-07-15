@@ -5,8 +5,10 @@ using Ortho.Application.Abstractions;
 using Ortho.Application.Documents;
 using Ortho.Application.Patients;
 using Ortho.Application.Users;
+using Ortho.Application.Imaging;
 using Ortho.Infrastructure.Audit;
 using Ortho.Infrastructure.Backup;
+using Ortho.Infrastructure.Imaging;
 using Ortho.Infrastructure.Persistence;
 using Ortho.Infrastructure.Security;
 using Ortho.Infrastructure.Storage;
@@ -44,6 +46,8 @@ public static class DependencyInjection
         services.AddSingleton<PatientService>();
         services.AddSingleton<UserService>();
         services.AddSingleton<DocumentService>();
+        services.AddSingleton<IMedicalImageDecoder, MedicalImageDecoder>();
+        services.AddSingleton<ImagingService>();
         services.AddSingleton(new BackupService(options));
 
         return services;

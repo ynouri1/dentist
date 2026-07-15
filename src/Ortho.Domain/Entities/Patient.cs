@@ -29,6 +29,7 @@ public class Patient
 
     public List<Consultation> Consultations { get; set; } = [];
     public List<PatientDocument> Documents { get; set; } = [];
+    public List<MedicalImage> Images { get; set; } = [];
 
     public string FullName => $"{LastName.ToUpperInvariant()} {FirstName}".Trim();
 
