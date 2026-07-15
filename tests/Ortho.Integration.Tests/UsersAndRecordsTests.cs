@@ -61,6 +61,34 @@ public class UsersAndRecordsTests : IDisposable
     }
 
     [Fact]
+    public async Task Recovery_code_resets_password_and_is_single_use()
+    {
+        await using var provider = BuildProvider();
+        var users = provider.GetRequiredService<UserService>();
+
+        var creation = await users.CreateAsync("dr.nouri", "Dr Nouri", "AncienMdp1!", UserRole.Praticien);
+        Assert.Matches(@"^[A-HJ-NP-Z2-9]{4}-[A-HJ-NP-Z2-9]{4}-[A-HJ-NP-Z2-9]{4}$", creation.RecoveryCode);
+
+        // Mauvais code → refus audité, mot de passe inchangé.
+        Assert.Null(await users.ResetPasswordAsync("dr.nouri", "AAAA-BBBB-CCCC", "NouveauMdp1!"));
+        Assert.NotNull(await users.AuthenticateAsync("dr.nouri", "AncienMdp1!"));
+
+        // Bon code (tirets/minuscules tolérés) → nouveau mot de passe + NOUVEAU code.
+        var newCode = await users.ResetPasswordAsync(
+            "dr.nouri", creation.RecoveryCode.Replace("-", "").ToLowerInvariant(), "NouveauMdp1!");
+        Assert.NotNull(newCode);
+        Assert.NotEqual(creation.RecoveryCode, newCode);
+
+        Assert.Null(await users.AuthenticateAsync("dr.nouri", "AncienMdp1!"));
+        Assert.NotNull(await users.AuthenticateAsync("dr.nouri", "NouveauMdp1!"));
+
+        // L'ancien code est consommé.
+        Assert.Null(await users.ResetPasswordAsync("dr.nouri", creation.RecoveryCode, "EncoreUnAutre1!"));
+        // Le nouveau fonctionne.
+        Assert.NotNull(await users.ResetPasswordAsync("dr.nouri", newCode!, "Definitif1!"));
+    }
+
+    [Fact]
     public async Task Consultations_and_documents_are_attached_to_the_patient_record()
     {
         await using var provider = BuildProvider();

@@ -105,6 +105,9 @@ public static class L
     public static string ToolCalibrate => Get(nameof(ToolCalibrate));
     public static string Superposition => Get(nameof(Superposition));
     public static string ReportPdf => Get(nameof(ReportPdf));
+    public static string ForgotPassword => Get(nameof(ForgotPassword));
+    public static string RestoreBackup => Get(nameof(RestoreBackup));
+    public static string Diagnostic => Get(nameof(Diagnostic));
     public static string ReferenceImageLabel => Get(nameof(ReferenceImageLabel));
     public static string ComparedImageLabel => Get(nameof(ComparedImageLabel));
 }

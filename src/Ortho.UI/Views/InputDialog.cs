@@ -11,9 +11,11 @@ namespace Ortho.UI.Views;
 public static class InputDialog
 {
     /// <summary>Retourne le texte saisi, ou null si annulé.</summary>
-    public static async Task<string?> ShowAsync(Window owner, string title, string message)
+    public static async Task<string?> ShowAsync(Window owner, string title, string message, bool masked = false)
     {
         var input = new TextBox();
+        if (masked)
+            input.PasswordChar = '•';
         var ok = new Button { Content = L.Get("Ok"), IsDefault = true };
         var cancel = new Button { Content = L.Get("Cancel"), IsCancel = true };
 

@@ -52,6 +52,18 @@ public partial class App : Avalonia.Application
             db.Database.Migrate();
         }
 
+        // Crash reporting local : tout crash finit dans les journaux (export via Diagnostic).
+        AppDomain.CurrentDomain.UnhandledException += (_, args) =>
+        {
+            Log.Fatal(args.ExceptionObject as Exception, "Crash non géré");
+            Log.CloseAndFlush();
+        };
+        System.Threading.Tasks.TaskScheduler.UnobservedTaskException += (_, args) =>
+        {
+            Log.Error(args.Exception, "Exception de tâche non observée");
+            args.SetObserved();
+        };
+
         Log.Information("Application démarrée, données dans {DataDirectory}", dataDirectory);
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -73,6 +85,37 @@ public partial class App : Avalonia.Application
                 : LoginMode.FirstRun,
         };
         var loginWindow = new LoginWindow { DataContext = loginViewModel };
+
+        // Le code de secours est montré une seule fois, à la création du compte.
+        loginViewModel.RecoveryCodeGenerated = code => InfoDialog.ShowAsync(
+            loginWindow,
+            Ortho.UI.Localization.L.Get("RecoveryCodeTitle"),
+            Ortho.UI.Localization.L.Get("RecoveryCodeMessage"),
+            code);
+
+        loginWindow.RestoreRequested = async archivePath =>
+        {
+            try
+            {
+                _services.GetRequiredService<BackupService>().RestoreFrom(archivePath);
+                using (var db = _services.GetRequiredService<IDbContextFactory<OrthoDbContext>>().CreateDbContext())
+                    db.Database.Migrate();
+
+                loginViewModel.Mode = users.HasAnyUserAsync().GetAwaiter().GetResult()
+                    ? LoginMode.Login
+                    : LoginMode.FirstRun;
+                loginViewModel.Error = null;
+                await InfoDialog.ShowAsync(
+                    loginWindow,
+                    Ortho.UI.Localization.L.Get("RestoreBackup"),
+                    Ortho.UI.Localization.L.Get("RestoreDone"));
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Restauration impossible");
+                loginViewModel.Error = Ortho.UI.Localization.L.F("RestoreFailed", ex.Message);
+            }
+        };
 
         loginViewModel.Succeeded = user =>
         {

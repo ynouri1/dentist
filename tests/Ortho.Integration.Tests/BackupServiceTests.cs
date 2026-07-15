@@ -70,6 +70,60 @@ public class BackupServiceTests : IDisposable
         Assert.DoesNotContain(entries, e => e.StartsWith("backups/"));
     }
 
+    [Fact]
+    public async Task Restore_replaces_current_data_with_the_archive_content()
+    {
+        await using var provider = BuildProvider();
+        var patients = provider.GetRequiredService<PatientService>();
+        var backup = provider.GetRequiredService<BackupService>();
+
+        // État T0 : un patient, exporté.
+        await patients.CreateAsync(new PatientDraft { FirstName = "Premier", LastName = "Patient" });
+        var archive = backup.ExportTo(_exportDirectory);
+
+        // La base évolue après l'export…
+        await patients.CreateAsync(new PatientDraft { FirstName = "Deuxieme", LastName = "Patient" });
+        Assert.Equal(2, (await patients.SearchAsync(null)).Count);
+
+        // …la restauration ramène exactement l'état T0.
+        backup.RestoreFrom(archive);
+        var restored = await patients.SearchAsync(null);
+        var patient = Assert.Single(restored);
+        Assert.Equal("PATIENT Premier", patient.FullName);
+
+        // Et un snapshot de sécurité de l'état pré-restauration a été pris.
+        Assert.NotEmpty(Directory.GetFiles(Path.Combine(_dataDirectory, "backups"), "ortho-*.db"));
+    }
+
+    [Fact]
+    public void Restore_rejects_archives_without_database()
+    {
+        var provider = BuildProvider();
+        var backup = provider.GetRequiredService<BackupService>();
+
+        Directory.CreateDirectory(_exportDirectory);
+        var bogus = Path.Combine(_exportDirectory, "bogus.zip");
+        using (var archive = System.IO.Compression.ZipFile.Open(bogus, System.IO.Compression.ZipArchiveMode.Create))
+            archive.CreateEntry("rien.txt");
+
+        Assert.Throws<InvalidOperationException>(() => backup.RestoreFrom(bogus));
+    }
+
+    [Fact]
+    public void Diagnostic_export_contains_only_logs()
+    {
+        var provider = BuildProvider();
+        var backup = provider.GetRequiredService<BackupService>();
+        Directory.CreateDirectory(Path.Combine(_dataDirectory, "logs"));
+        File.WriteAllText(Path.Combine(_dataDirectory, "logs", "ortho-20260715.log"), "journal");
+
+        var archivePath = backup.ExportLogsTo(_exportDirectory);
+
+        using var archive = System.IO.Compression.ZipFile.OpenRead(archivePath);
+        Assert.Contains(archive.Entries, e => e.FullName == "logs/ortho-20260715.log");
+        Assert.DoesNotContain(archive.Entries, e => e.FullName.Contains("ortho.db"));
+    }
+
     public void Dispose()
     {
         foreach (var directory in new[] { _dataDirectory, _exportDirectory })

@@ -19,6 +19,7 @@
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                 <TextBlock Text="{Binding CurrentUserDisplay}" VerticalAlignment="Center" Opacity="0.7" />
+                <Button Content="{x:Static loc:L.Diagnostic}" Command="{Binding ExportDiagnosticCommand}" />
                 <Button Content="{x:Static loc:L.Lock}" Command="{Binding LockCommand}" />
             </StackPanel>
         </Grid>

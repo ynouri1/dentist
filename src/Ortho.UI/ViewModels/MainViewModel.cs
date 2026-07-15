@@ -177,6 +177,22 @@ public partial class MainViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private async Task ExportDiagnosticAsync()
+    {
+        try
+        {
+            var targetDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Ortho Diagnostics");
+            var archive = await Task.Run(() => _backup.ExportLogsTo(targetDirectory));
+            StatusMessage = L.F("DiagnosticExported", archive);
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L.F("StatusBackupFailed", ex.Message);
+        }
+    }
+
+    [RelayCommand]
     private async Task BackupAsync()
     {
         try

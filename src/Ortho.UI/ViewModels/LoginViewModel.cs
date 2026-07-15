@@ -32,8 +32,14 @@ public partial class LoginViewModel(UserService users) : ViewModelBase
     /// <summary>Invoqué avec l'utilisateur authentifié.</summary>
     public Action<AppUser>? Succeeded { get; set; }
 
+    /// <summary>Montre le code de secours au praticien (attendu avant de continuer).</summary>
+    public Func<string, Task>? RecoveryCodeGenerated { get; set; }
+
     public bool IsFirstRun => Mode == LoginMode.FirstRun;
     public bool IsUnlock => Mode == LoginMode.Unlock;
+
+    /// <summary>Mot de passe oublié / restauration : uniquement sur l'écran de connexion.</summary>
+    public bool ShowRecoveryActions => Mode == LoginMode.Login;
 
     public string Title => Mode switch
     {
@@ -53,6 +59,7 @@ public partial class LoginViewModel(UserService users) : ViewModelBase
     {
         OnPropertyChanged(nameof(IsFirstRun));
         OnPropertyChanged(nameof(IsUnlock));
+        OnPropertyChanged(nameof(ShowRecoveryActions));
         OnPropertyChanged(nameof(Title));
         OnPropertyChanged(nameof(SubmitLabel));
     }
@@ -74,7 +81,9 @@ public partial class LoginViewModel(UserService users) : ViewModelBase
                     Error = L.ErrorPasswordMismatch;
                     return;
                 }
-                await users.CreateAsync(Username, DisplayName, Password, (UserRole)RoleIndex);
+                var creation = await users.CreateAsync(Username, DisplayName, Password, (UserRole)RoleIndex);
+                if (RecoveryCodeGenerated is { } showCode)
+                    await showCode(creation.RecoveryCode);
             }
 
             var user = await users.AuthenticateAsync(Username, Password);
@@ -99,6 +108,24 @@ public partial class LoginViewModel(UserService users) : ViewModelBase
         finally
         {
             Busy = false;
+        }
+    }
+
+    /// <summary>Réinitialisation par code de secours ; retourne le nouveau code ou null.</summary>
+    public async Task<string?> ResetPasswordAsync(string username, string recoveryCode, string newPassword)
+    {
+        try
+        {
+            Error = null;
+            var newCode = await users.ResetPasswordAsync(username, recoveryCode, newPassword);
+            if (newCode is null)
+                Error = L.Get("RecoveryFailed");
+            return newCode;
+        }
+        catch (ValidationException ex)
+        {
+            Error = ex.Message;
+            return null;
         }
     }
 }

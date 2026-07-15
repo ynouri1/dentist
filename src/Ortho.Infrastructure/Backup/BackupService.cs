@@ -68,6 +68,75 @@ public class BackupService(OrthoDataOptions options)
         return archivePath;
     }
 
+    /// <summary>
+    /// Restaure un export zip : snapshot de sécurité de la base actuelle, puis
+    /// remplacement des données (base + objets + clés). L'appelant doit ensuite
+    /// réappliquer les migrations. Les clés DPAPI ne sont restaurables que par
+    /// le même compte Windows.
+    /// </summary>
+    public void RestoreFrom(string archivePath)
+    {
+        using var archive = ZipFile.OpenRead(archivePath);
+        if (archive.GetEntry("ortho.db") is null)
+            throw new InvalidOperationException("Archive invalide : ortho.db absent.");
+
+        SqliteConnection.ClearAllPools();
+        SnapshotDatabase();
+
+        // L'object store est remplacé intégralement pour ne pas mélanger deux états.
+        var objectsDirectory = Path.Combine(options.DataDirectory, "objects");
+        if (Directory.Exists(objectsDirectory))
+            Directory.Delete(objectsDirectory, recursive: true);
+
+        var root = Path.GetFullPath(options.DataDirectory);
+        foreach (var entry in archive.Entries)
+        {
+            if (string.IsNullOrEmpty(entry.Name)) // répertoire
+                continue;
+
+            var destination = Path.GetFullPath(Path.Combine(root, entry.FullName));
+            if (!destination.StartsWith(root, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException($"Entrée d'archive invalide : {entry.FullName}");
+
+            Directory.CreateDirectory(Path.GetDirectoryName(destination)!);
+            entry.ExtractToFile(destination, overwrite: true);
+        }
+
+        // Fichiers WAL/SHM d'une autre session : obsolètes après restauration.
+        foreach (var sidecar in new[] { "-wal", "-shm" })
+        {
+            var path = Path.Combine(options.DataDirectory, "ortho.db" + sidecar);
+            if (File.Exists(path) && archive.GetEntry("ortho.db" + sidecar.TrimStart('-')) is null)
+                File.Delete(path);
+        }
+
+        Log.Information("Sauvegarde restaurée depuis {Archive}", archivePath);
+    }
+
+    /// <summary>Export du diagnostic : uniquement les journaux, jamais de données patient.</summary>
+    public string ExportLogsTo(string targetDirectory)
+    {
+        Directory.CreateDirectory(targetDirectory);
+        var archivePath = Path.Combine(targetDirectory, $"ortho-diagnostic-{DateTime.Now:yyyyMMdd-HHmmss}.zip");
+
+        using var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create);
+        var logsDirectory = Path.Combine(options.DataDirectory, "logs");
+        if (Directory.Exists(logsDirectory))
+        {
+            foreach (var file in Directory.EnumerateFiles(logsDirectory))
+            {
+                // ReadWrite : le fichier du jour est encore ouvert par Serilog.
+                using var source = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                var entry = archive.CreateEntry("logs/" + Path.GetFileName(file));
+                using var target = entry.Open();
+                source.CopyTo(target);
+            }
+        }
+
+        Log.Information("Diagnostic exporté : {Path}", archivePath);
+        return archivePath;
+    }
+
     private static void Prune(string backupDirectory)
     {
         var snapshots = new DirectoryInfo(backupDirectory)

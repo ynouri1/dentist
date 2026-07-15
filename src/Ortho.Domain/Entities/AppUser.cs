@@ -17,6 +17,10 @@ public class AppUser
     public byte[] PasswordHash { get; set; } = [];
     public byte[] PasswordSalt { get; set; } = [];
 
+    /// <summary>Code de secours (haché) remis à la création du compte : seule voie de réinitialisation.</summary>
+    public byte[]? RecoveryCodeHash { get; set; }
+    public byte[]? RecoveryCodeSalt { get; set; }
+
     public bool IsActive { get; set; } = true;
     public DateTime CreatedAtUtc { get; set; }
 }

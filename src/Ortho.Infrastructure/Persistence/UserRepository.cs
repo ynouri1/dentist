@@ -24,4 +24,11 @@ public class UserRepository(IDbContextFactory<OrthoDbContext> contextFactory) : 
         db.Users.Add(user);
         await db.SaveChangesAsync(ct);
     }
+
+    public async Task UpdateAsync(AppUser user, CancellationToken ct = default)
+    {
+        await using var db = await contextFactory.CreateDbContextAsync(ct);
+        db.Users.Update(user);
+        await db.SaveChangesAsync(ct);
+    }
 }

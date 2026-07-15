@@ -10,9 +10,9 @@ namespace Ortho.UI.Views;
 /// <summary>Petit dialogue modal Supprimer/Annuler, construit en code.</summary>
 public static class ConfirmDialog
 {
-    public static async Task<bool> ShowAsync(Window owner, string message)
+    public static async Task<bool> ShowAsync(Window owner, string message, string? confirmLabel = null)
     {
-        var confirm = new Button { Content = L.Get("ConfirmDelete") };
+        var confirm = new Button { Content = confirmLabel ?? L.Get("ConfirmDelete") };
         var cancel = new Button { Content = L.Get("Cancel"), IsCancel = true };
 
         var dialog = new Window

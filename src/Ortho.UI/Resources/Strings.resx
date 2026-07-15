@@ -137,4 +137,23 @@
   <data name="ReportSaveTitle" xml:space="preserve"><value>Exporter le rapport PDF</value></data>
   <data name="ReportExported" xml:space="preserve"><value>Rapport exporté : {0} (copie archivée dans le dossier patient)</value></data>
   <data name="ReportArchived" xml:space="preserve"><value>Rapport archivé dans le dossier patient : {0}</value></data>
+
+  <data name="ForgotPassword" xml:space="preserve"><value>Mot de passe oublié ?</value></data>
+  <data name="RecoveryUsernamePrompt" xml:space="preserve"><value>Identifiant du compte :</value></data>
+  <data name="RecoveryCodePrompt" xml:space="preserve"><value>Code de secours (XXXX-XXXX-XXXX) :</value></data>
+  <data name="NewPasswordPrompt" xml:space="preserve"><value>Nouveau mot de passe (8 caractères minimum) :</value></data>
+  <data name="RecoveryFailed" xml:space="preserve"><value>Identifiant ou code de secours invalide.</value></data>
+  <data name="RecoveryCodeTitle" xml:space="preserve"><value>Code de secours</value></data>
+  <data name="RecoveryCodeMessage" xml:space="preserve"><value>Notez précieusement ce code de secours et conservez-le en lieu sûr : c'est la seule façon de réinitialiser un mot de passe oublié.</value></data>
+  <data name="RecoveryNewCodeMessage" xml:space="preserve"><value>Mot de passe réinitialisé. Voici votre NOUVEAU code de secours (l'ancien ne fonctionne plus) :</value></data>
+
+  <data name="RestoreBackup" xml:space="preserve"><value>Restaurer une sauvegarde…</value></data>
+  <data name="Restore" xml:space="preserve"><value>Restaurer</value></data>
+  <data name="BackupFilterName" xml:space="preserve"><value>Sauvegarde Ortho</value></data>
+  <data name="RestoreConfirmMessage" xml:space="preserve"><value>Restaurer cette sauvegarde remplacera toutes les données actuelles (patients, images, comptes). Un instantané de sécurité de la base actuelle sera pris avant. Continuer ?</value></data>
+  <data name="RestoreDone" xml:space="preserve"><value>Sauvegarde restaurée. Connectez-vous avec les comptes de la sauvegarde.</value></data>
+  <data name="RestoreFailed" xml:space="preserve"><value>Restauration impossible : {0}</value></data>
+
+  <data name="Diagnostic" xml:space="preserve"><value>Exporter le diagnostic</value></data>
+  <data name="DiagnosticExported" xml:space="preserve"><value>Diagnostic exporté (journaux uniquement, aucune donnée patient) : {0}</value></data>
 </root>
