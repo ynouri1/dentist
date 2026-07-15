@@ -70,6 +70,7 @@
 ### Sprint 7 — Durcissement + pilote (semaines 15–16)
 **Objectif : mise en production chez 2–3 cabinets pilotes.**
 - Sauvegarde/restauration chiffrée (disque externe), migration de schéma testée (R10).
+- Récupération de mot de passe oublié (constaté en test interne : le chiffrement étant découplé du mot de passe, une réinitialisation sécurisée locale est possible — code de secours imprimé à la création du compte, par exemple).
 - Installeur final, mise à jour in-app, manuel utilisateur FR.
 - Crash reporting local + export de diagnostic.
 - Correction des retours pilotes, gel du périmètre P0.
