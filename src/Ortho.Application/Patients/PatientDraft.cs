@@ -13,4 +13,5 @@ public record PatientDraft
     public string? Email { get; init; }
     public string? Address { get; init; }
     public string? Notes { get; init; }
+    public bool ResearchConsent { get; init; }
 }

@@ -81,6 +81,13 @@ public class PatientService(IPatientRepository repository, IAuditTrail audit)
         patient.Email = Normalize(draft.Email);
         patient.Address = Normalize(draft.Address);
         patient.Notes = Normalize(draft.Notes);
+
+        // Horodate le consentement au moment où il est donné ; l'efface s'il est retiré.
+        if (draft.ResearchConsent && !patient.ResearchConsent)
+            patient.ResearchConsentAtUtc = DateTime.UtcNow;
+        else if (!draft.ResearchConsent)
+            patient.ResearchConsentAtUtc = null;
+        patient.ResearchConsent = draft.ResearchConsent;
     }
 
     private static string? Normalize(string? value)

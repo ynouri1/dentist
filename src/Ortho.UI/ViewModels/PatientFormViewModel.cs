@@ -19,6 +19,7 @@ public partial class PatientFormViewModel : ViewModelBase
     [ObservableProperty] private string _email = "";
     [ObservableProperty] private string _address = "";
     [ObservableProperty] private string _notes = "";
+    [ObservableProperty] private bool _researchConsent;
     [ObservableProperty] private string? _error;
 
     public string Title => Id is null
@@ -39,6 +40,7 @@ public partial class PatientFormViewModel : ViewModelBase
         Email = patient.Email ?? "",
         Address = patient.Address ?? "",
         Notes = patient.Notes ?? "",
+        ResearchConsent = patient.ResearchConsent,
     };
 
     public PatientDraft ToDraft() => new()
@@ -51,5 +53,6 @@ public partial class PatientFormViewModel : ViewModelBase
         Email = Email,
         Address = Address,
         Notes = Notes,
+        ResearchConsent = ResearchConsent,
     };
 }

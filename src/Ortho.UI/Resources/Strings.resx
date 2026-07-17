@@ -156,4 +156,12 @@
 
   <data name="Diagnostic" xml:space="preserve"><value>Exporter le diagnostic</value></data>
   <data name="DiagnosticExported" xml:space="preserve"><value>Diagnostic exporté (journaux uniquement, aucune donnée patient) : {0}</value></data>
+
+  <data name="ResearchConsent" xml:space="preserve"><value>Consent à l'usage anonymisé des données pour améliorer l'IA</value></data>
+  <data name="PreplaceAi" xml:space="preserve"><value>Pré-placer (IA)</value></data>
+  <data name="AiPreplaced" xml:space="preserve"><value>{0} point(s) proposés par l'IA — vérifiez et ajustez chacun avant de valider.</value></data>
+  <data name="AiNoProposal" xml:space="preserve"><value>L'IA n'a proposé aucun point exploitable.</value></data>
+  <data name="AiFailed" xml:space="preserve"><value>Pré-placement IA impossible : {0}</value></data>
+  <data name="ExportTrainingData" xml:space="preserve"><value>Exporter le dataset IA</value></data>
+  <data name="TrainingExported" xml:space="preserve"><value>Dataset exporté : {0} échantillon(s), {1} landmark(s) → {2} (patients consentants, anonymisé)</value></data>
 </root>

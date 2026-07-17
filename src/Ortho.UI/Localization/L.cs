@@ -108,6 +108,9 @@ public static class L
     public static string ForgotPassword => Get(nameof(ForgotPassword));
     public static string RestoreBackup => Get(nameof(RestoreBackup));
     public static string Diagnostic => Get(nameof(Diagnostic));
+    public static string ResearchConsent => Get(nameof(ResearchConsent));
+    public static string PreplaceAi => Get(nameof(PreplaceAi));
+    public static string ExportTrainingData => Get(nameof(ExportTrainingData));
     public static string ReferenceImageLabel => Get(nameof(ReferenceImageLabel));
     public static string ComparedImageLabel => Get(nameof(ComparedImageLabel));
 }

@@ -24,6 +24,8 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
+            <Button Content="{x:Static loc:L.PreplaceAi}" Command="{Binding PreplaceWithAiCommand}"
+                    IsVisible="{Binding AiAvailable}" />
             <Button Content="{x:Static loc:L.UndoPoint}" Command="{Binding UndoCommand}" />
             <Button Content="{x:Static loc:L.RedoPoint}" Command="{Binding RedoCommand}" />
             <Button Content="{x:Static loc:L.ReportPdf}" Click="OnReportClick" />

@@ -1,0 +1,11 @@
+# Pipeline d'entraînement IA — landmarks céphalométriques.
+# Versions indicatives, à figer lors du premier entraînement.
+torch>=2.2
+torchvision>=0.17
+numpy>=1.26
+opencv-python>=4.9
+albumentations>=1.4
+onnx>=1.16
+onnxruntime>=1.18
+pyyaml>=6.0
+tqdm>=4.66

@@ -27,6 +27,10 @@ public class Patient
     public DateTime CreatedAtUtc { get; set; }
     public DateTime UpdatedAtUtc { get; set; }
 
+    /// <summary>Consentement à l'usage anonymisé des données pour l'entraînement de l'IA (P1).</summary>
+    public bool ResearchConsent { get; set; }
+    public DateTime? ResearchConsentAtUtc { get; set; }
+
     public List<Consultation> Consultations { get; set; } = [];
     public List<PatientDocument> Documents { get; set; } = [];
     public List<MedicalImage> Images { get; set; } = [];

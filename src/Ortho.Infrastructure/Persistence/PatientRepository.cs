@@ -38,6 +38,16 @@ public class PatientRepository(IDbContextFactory<OrthoDbContext> contextFactory)
             .ToListAsync(ct);
     }
 
+    public async Task<IReadOnlyList<Patient>> ListWithResearchConsentAsync(CancellationToken ct = default)
+    {
+        await using var db = await contextFactory.CreateDbContextAsync(ct);
+        return await db.Patients
+            .Include(p => p.Images)
+            .AsNoTracking()
+            .Where(p => p.ResearchConsent)
+            .ToListAsync(ct);
+    }
+
     public async Task AddAsync(Patient patient, CancellationToken ct = default)
     {
         await using var db = await contextFactory.CreateDbContextAsync(ct);

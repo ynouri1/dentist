@@ -25,6 +25,8 @@ public partial class MainViewModel : ViewModelBase
     private readonly ImagingService _imaging;
     private readonly CephalometryService _ceph;
     private readonly Ortho.Reporting.ReportService _reports;
+    private readonly ILandmarkDetector _detector;
+    private readonly Ortho.Application.Training.TrainingDataExporter _training;
     private readonly BackupService _backup;
     private readonly ICurrentUser _currentUser;
 
@@ -70,6 +72,7 @@ public partial class MainViewModel : ViewModelBase
     public MainViewModel(
         PatientService patients, DocumentService documents, ImagingService imaging,
         CephalometryService ceph, Ortho.Reporting.ReportService reports,
+        ILandmarkDetector detector, Ortho.Application.Training.TrainingDataExporter training,
         BackupService backup, ICurrentUser currentUser)
     {
         _patients = patients;
@@ -77,9 +80,27 @@ public partial class MainViewModel : ViewModelBase
         _imaging = imaging;
         _ceph = ceph;
         _reports = reports;
+        _detector = detector;
+        _training = training;
         _backup = backup;
         _currentUser = currentUser;
         _ = RefreshAsync();
+    }
+
+    [RelayCommand]
+    private async Task ExportTrainingDataAsync()
+    {
+        try
+        {
+            var targetDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Ortho Dataset IA");
+            var result = await Task.Run(() => _training.ExportAsync(targetDirectory));
+            StatusMessage = L.F("TrainingExported", result.Samples, result.Landmarks, targetDirectory);
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L.F("StatusBackupFailed", ex.Message);
+        }
     }
 
     partial void OnSearchTextChanged(string value) => _ = RefreshAsync();
@@ -214,7 +235,9 @@ public partial class MainViewModel : ViewModelBase
 
     /// <summary>Analyse céphalométrique de l'image sélectionnée ; null si aucune sélection.</summary>
     public CephAnalysisViewModel? CreateCephViewModel()
-        => SelectedImage is { } image ? new CephAnalysisViewModel(image, _ceph, _imaging, _reports) : null;
+        => SelectedImage is { } image
+            ? new CephAnalysisViewModel(image, _ceph, _imaging, _reports, _detector)
+            : null;
 
     /// <summary>Superposition T0/T1 sur les images du patient courant.</summary>
     public SuperpositionViewModel CreateSuperpositionViewModel()

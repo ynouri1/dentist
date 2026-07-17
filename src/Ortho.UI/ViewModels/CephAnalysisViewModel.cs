@@ -33,7 +33,8 @@ public partial class LandmarkItemViewModel(LandmarkDefinition definition) : View
 public record MeasureRow(string Name, string Value, string Norm, IBrush StatusBrush, string DeviationText);
 
 public partial class CephAnalysisViewModel(
-    MedicalImage image, CephalometryService ceph, ImagingService imaging, Ortho.Reporting.ReportService reports)
+    MedicalImage image, CephalometryService ceph, ImagingService imaging,
+    Ortho.Reporting.ReportService reports, Ortho.Application.Abstractions.ILandmarkDetector detector)
     : ViewModelBase
 {
     private CephAnalysis? _analysis;
@@ -57,6 +58,9 @@ public partial class CephAnalysisViewModel(
     public event Action? StateChanged;
 
     public string Title => L.F("CephWindowTitle", Image.FileName);
+
+    /// <summary>Vrai si un modèle IA est chargé : conditionne l'affichage du bouton de pré-placement.</summary>
+    public bool AiAvailable => detector.IsAvailable;
 
     public async Task LoadAsync()
     {
@@ -155,6 +159,43 @@ public partial class CephAnalysisViewModel(
             await ceph.RemoveLandmarkAsync(_analysis.Id, code);
         }
         RefreshState();
+    }
+
+    /// <summary>
+    /// Pré-placement IA : propose une position pour les points non encore placés.
+    /// Le praticien doit valider/ajuster chaque point (l'IA ne décide pas seule).
+    /// </summary>
+    [RelayCommand]
+    private async Task PreplaceWithAiAsync()
+    {
+        if (_analysis is null || !detector.IsAvailable || Bitmap is null)
+            return;
+
+        try
+        {
+            using var buffer = new MemoryStream();
+            using (var data = Bitmap.Encode(SKEncodedImageFormat.Png, 100))
+                data.SaveTo(buffer);
+
+            var missing = Landmarks.Where(l => !l.IsPlaced).Select(l => l.Code).ToList();
+            var detected = await detector.DetectAsync(buffer.ToArray(), missing);
+            if (detected.Count == 0)
+            {
+                StatusMessage = L.Get("AiNoProposal");
+                return;
+            }
+
+            await ceph.ApplyDetectedLandmarksAsync(_analysis.Id, detected);
+            foreach (var landmark in detected)
+                _points[landmark.Code] = landmark.Point;
+
+            RefreshState();
+            StatusMessage = L.F("AiPreplaced", detected.Count);
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = L.F("AiFailed", ex.Message);
+        }
     }
 
     /// <summary>Génère le rapport PDF : archivé dans le dossier patient, copie exportée si chemin fourni.</summary>

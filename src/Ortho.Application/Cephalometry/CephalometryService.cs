@@ -98,6 +98,24 @@ public class CephalometryService(ICephRepository analyses, IAuditTrail audit)
     public Task<CephAnalysis?> GetAsync(Guid analysisId, CancellationToken ct = default)
         => analyses.GetAsync(analysisId, ct);
 
+    /// <summary>
+    /// Place les landmarks proposés par l'IA (provenance Ai + confiance). Ils
+    /// devront être validés/ajustés par le praticien avant usage clinique.
+    /// </summary>
+    public async Task ApplyDetectedLandmarksAsync(
+        Guid analysisId, IReadOnlyList<DetectedLandmark> detected, CancellationToken ct = default)
+    {
+        foreach (var landmark in detected)
+        {
+            if (!LandmarkCatalog.All.ContainsKey(landmark.Code))
+                continue;
+            await SetLandmarkAsync(
+                analysisId, landmark.Code, landmark.Point, LandmarkSource.Ai, landmark.Confidence, ct);
+        }
+        await audit.RecordAsync("ceph.ai.preplace", nameof(CephAnalysis), analysisId.ToString(),
+            $"{detected.Count} landmark(s) proposés par l'IA — validation requise", ct);
+    }
+
     public async Task SetLandmarkAsync(
         Guid analysisId, string code, ImagePoint point,
         LandmarkSource source = LandmarkSource.Manual, double? confidence = null, CancellationToken ct = default)

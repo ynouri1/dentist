@@ -7,6 +7,7 @@ using Ortho.Application.Patients;
 using Ortho.Application.Users;
 using Ortho.Application.Cephalometry;
 using Ortho.Application.Imaging;
+using Ortho.Application.Training;
 using Ortho.Infrastructure.Audit;
 using Ortho.Infrastructure.Backup;
 using Ortho.Infrastructure.Imaging;
@@ -51,6 +52,9 @@ public static class DependencyInjection
         services.AddSingleton<ImagingService>();
         services.AddSingleton<ICephRepository, CephRepository>();
         services.AddSingleton<CephalometryService>();
+        services.AddSingleton<ILandmarkDetector>(
+            new OnnxLandmarkDetector(Path.Combine(options.DataDirectory, "models")));
+        services.AddSingleton<TrainingDataExporter>();
         services.AddSingleton(new BackupService(options));
 
         return services;

@@ -27,6 +27,9 @@ public class PatientServiceTests
         public Task<string> NextFileNumberAsync(CancellationToken ct = default)
             => Task.FromResult($"P-{DateTime.Today.Year}-{Added.Count + 1:D4}");
 
+        public Task<IReadOnlyList<Patient>> ListWithResearchConsentAsync(CancellationToken ct = default)
+            => Task.FromResult<IReadOnlyList<Patient>>(Added.Where(p => p.ResearchConsent).ToList());
+
         public List<Consultation> Consultations { get; } = [];
         public List<PatientDocument> Documents { get; } = [];
 

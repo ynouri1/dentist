@@ -16,6 +16,7 @@
                 <TextBox Text="{Binding SearchText}" PlaceholderText="{x:Static loc:L.SearchPlaceholder}" Width="320" />
                 <Button Content="{x:Static loc:L.NewPatient}" Command="{Binding NewPatientCommand}" />
                 <Button Content="{x:Static loc:L.BackupData}" Command="{Binding BackupCommand}" />
+                <Button Content="{x:Static loc:L.ExportTrainingData}" Command="{Binding ExportTrainingDataCommand}" />
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                 <TextBlock Text="{Binding CurrentUserDisplay}" VerticalAlignment="Center" Opacity="0.7" />
@@ -81,6 +82,9 @@
                                           Text="{Binding Form.Notes}"
                                           AcceptsReturn="True" MinHeight="80" TextWrapping="Wrap" />
                             </Grid>
+
+                            <CheckBox IsChecked="{Binding Form.ResearchConsent}"
+                                      Content="{x:Static loc:L.ResearchConsent}" Margin="0,4,0,0" />
 
                             <Button Content="{x:Static loc:L.Save}"
                                     Command="{Binding SaveCommand}"
