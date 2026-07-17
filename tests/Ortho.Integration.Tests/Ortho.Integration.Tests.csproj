@@ -28,6 +28,8 @@
   <ItemGroup>
     <!-- Corpus DICOM réel (voir DicomCorpus/README.md) copié à côté des tests. -->
     <None Include="DicomCorpus\**" CopyToOutputDirectory="PreserveNewest" />
+    <!-- Modèle ONNX de référence (généré par ml/tools/make_reference_model.py). -->
+    <None Include="Models\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,41 @@
+# Pipeline reproductible (DVC). `dvc repro` réexécute uniquement les étapes
+# dont les dépendances ont changé. `dvc.lock` fige les hashes des données/sorties.
+stages:
+  prepare:
+    cmd: python prepare_dataset.py --isbi data/isbi2015 --app-export data/app --out data/prepared
+    deps:
+      - prepare_dataset.py
+      - data/isbi2015
+      - data/app
+    outs:
+      - data/prepared
+
+  train:
+    cmd: python train.py --data data/prepared --out runs/hrnet --params params.yaml
+    deps:
+      - train.py
+      - orthoceph
+      - data/prepared
+    params:
+      - train
+    outs:
+      - runs/hrnet/best.pt
+
+  evaluate:
+    cmd: python evaluate.py --model runs/hrnet/best.pt --data data/prepared --out reports --version ${MODEL_VERSION}
+    deps:
+      - evaluate.py
+      - orthoceph
+      - runs/hrnet/best.pt
+      - data/prepared
+    metrics:
+      - reports/validation.json
+
+  export:
+    cmd: python export_onnx.py --model runs/hrnet/best.pt --out ../artifacts/landmarks
+    deps:
+      - export_onnx.py
+      - orthoceph
+      - runs/hrnet/best.pt
+    outs:
+      - ../artifacts/landmarks/landmarks.onnx
